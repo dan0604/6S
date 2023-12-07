@@ -1,0 +1,396 @@
+﻿@model IEnumerable<_6S.Context.Tbl_Join_ALL>
+@{
+    ViewBag.Title = "Thêm báo cáo";
+}
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalAdd" aria-labelledby="myModalTitle" aria-hidden="true">
+    <div class="modal-dialog my-custom-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm mới thông tin CHECKLIST 6S</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Dữ liệu 6s</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form id="checklistForm" method="post" enctype="multipart/form-data">
+                                    <div class="row">
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="forLoai_BC">Loại báo cáo</label>
+                                                <select id="Loai_BC" name="Loai_BC" class="form-control select2bs4" disabled></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="forPhongBan">Xưởng/ Văn</label>
+                                                <select id="PhongBan" name="PhongBan" class="form-control select2bs4" disabled>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="Username">Người đánh giá</label>
+                                                <select id="Username" name="Username" class="form-control select2bs4" disabled>
+                                                    <option value="@Session["Username"]">@Session["Fullname"]</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="inputName">Ngày đánh giá</label>
+                                                <input class="form-control" type="datetime-local" required="" id="datetimepicker" name="Ngay_BC" placeholder="DD/MM/YYYY - HH:mm" title="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))" size="20" autocomplete="off" value="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))" disabled>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Table -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Bảng đánh giá chi tiết</h3>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="previewTable" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Số thứ tự</th>
+                                                <th>Khu vực</th>
+                                                <th>Hạng mục chính</th>
+                                                <th>Hạng mục phụ</th>
+                                                <th>Mô tả vấn đề</th>
+                                                <th>Hình ảnh ghi nhận</th>
+                                                <th>Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Dữ liệu xem trước sẽ được hiển thị tại đây -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="KhuVuc">Khu vực</label>
+                                            <input type="text" class="form-control" id="KhuVuc" name="KhuVuc">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="Hangmuc_Chinh">Hạng mục chính</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuChinh" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Chọn hạng mục chính
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuChinh" style="max-height:200px;overflow-y:scroll">
+                                                    <!---S1-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S1.1">
+                                                        S1.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S1.2">
+                                                        S1.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S1.3">
+                                                        S1.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S1.4">
+                                                        S1.4
+                                                    </label>
+                                                    <!--S2-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S2.1">
+                                                        S2.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S2.2">
+                                                        S2.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S2.3">
+                                                        S2.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S2.4">
+                                                        S2.4
+                                                    </label>
+                                                    <!---S3-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S3.1">
+                                                        S3.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S3.2">
+                                                        S3.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S3.3">
+                                                        S3.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S3.4">
+                                                        S3.4
+                                                    </label>
+                                                    <!---S4-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S4.1">
+                                                        S4.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S4.2">
+                                                        S4.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S4.3">
+                                                        S4.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S4.4">
+                                                        S4.4
+                                                    </label>
+                                                    <!---S5-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S5.1">
+                                                        S5.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S5.2">
+                                                        S5.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S5.3">
+                                                        S5.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S5.4">
+                                                        S5.4
+                                                    </label>
+                                                    <!---S6-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S6.1">
+                                                        S6.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S6.2">
+                                                        S6.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S6.3">
+                                                        S6.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Chinh[]" value="S6.4">
+                                                        S6.4
+                                                    </label>
+                                                    <!-- Thêm các tùy chọn hạng mục khác nếu cần -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="Hangmuc_Phu">Hạng mục phụ</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuPhu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Chọn hạng mục phụ
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuPhu" style="max-height:200px;overflow-y:scroll">
+                                                    <!---S1-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S1.1">
+                                                        S1.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S1.2">
+                                                        S1.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S1.3">
+                                                        S1.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S1.4">
+                                                        S1.4
+                                                    </label>
+                                                    <!--S2-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S2.1">
+                                                        S2.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S2.2">
+                                                        S2.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S2.3">
+                                                        S2.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S2.4">
+                                                        S2.4
+                                                    </label>
+                                                    <!---S3-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S3.1">
+                                                        S3.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S3.2">
+                                                        S3.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S3.3">
+                                                        S3.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S3.4">
+                                                        S3.4
+                                                    </label>
+                                                    <!---S4-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S4.1">
+                                                        S4.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S4.2">
+                                                        S4.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S4.3">
+                                                        S4.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S4.4">
+                                                        S4.4
+                                                    </label>
+                                                    <!---S5-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S5.1">
+                                                        S5.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S5.2">
+                                                        S5.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S5.3">
+                                                        S5.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S5.4">
+                                                        S5.4
+                                                    </label>
+                                                    <!---S6-->
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S6.1">
+                                                        S6.1
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S6.2">
+                                                        S6.2
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S6.3">
+                                                        S6.3
+                                                    </label>
+                                                    <label class="dropdown-item">
+                                                        <input type="checkbox" class="form-check-input" name="Hangmuc_Phu[]" value="S6.4">
+                                                        S6.4
+                                                    </label>
+                                                    <!-- Thêm các tùy chọn hạng mục khác nếu cần -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="HinhAnh">Hình ảnh</label>
+                                            <input type="file" class="form-control" id="HinhAnh" name="HinhAnh" multiple accept="image/*">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="MoTa">Mô tả vấn đề</label>
+                                            <textarea class="form-control" id="MoTa" name="MoTa" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!---Tính lỗi từ table-->
+                <!-- Add this part to display total errorCounts, total pointCounts, and percentage -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="errorCount">Tổng lỗi</label>
+                                            <input type="text" class="form-control" id="errorCount" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="pointCount">Tổng điểm</label>
+                                            <input type="text" class="form-control" id="pointCount" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="imageCount">Tổng hình lỗi</label>
+                                            <input type="text" class="form-control" id="imageCount" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <a href="Index_checklist" class="btn btn-outline-secondary"><i class='fas fa-ban'></i>Hủy</a>
+                        <button type="button" class="btn btn-outline-primary" onclick="saveTemporarily()"><i class='fas fa-save'></i>Lưu tạm</button>
+                        <button type="submit" class="btn btn-outline-success float-right" onclick="confirmAndSend()"><i class='fas fa-check'></i>Xác nhận</button>
+                    </div>
+                    <div id="loading" style="display:none; text-align:center">Đang nạp...</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+

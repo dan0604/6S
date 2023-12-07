@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.vrs = "1.0.0";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi-VI">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Trang đăng nhập BITIS" />
+    <meta name="author" content="Đây là trang đăng nhập phần mềm 6S BITIS-Tổng Công Ty BITIS" />
+    <title>BITIS 6S - Đăng nhập tài khoản</title>
+    <link href="~/Assets/css/styles.css" rel="stylesheet" />
+    <link rel="icon" href="~/Assets/images/6S_Logo_update.ico" type="image/x-icon" />
+</head>
+<body class="bg-primary">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Phần mềm 6S BITIS</h3></div>
+                                <div class="card-body">
+                                    <form id="loginForm" method="post">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="Username"
+                                                   title="Vui lòng bao gồm ít nhất 1 ký tự viết hoa, 1 ký tự viết thường và 1 số."
+                                                   pattern=".*&#64;.*\.com.*"
+                                                   type="email" required=""
+                                                   oninvalid="this.setCustomValidity('Vui lòng nhập email đúng định dạng example@example.com')"
+                                                   oninput="setCustomValidity('')" autocomplete="on" aria-required="true"
+                                                   placeholder="name@example.com" />
+                                            <label for="Username">Nhập địa chỉ email</label>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" title="Vui lòng bao gồm ít nhất 1 ký tự viết hoa, 1 ký tự viết thường và 1 số." id="Password" type="password" required=""
+                                                   oninvalid="this.setCustomValidity('Vui lòng nhập mật khẩu ')"
+                                                   oninput="setCustomValidity('')" aria-required="true" autocomplete="current-password" placeholder="Password" />
+                                            <label for="input-Password">Mật khẩu</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span id="toggle-Password" class="input-group-text"><i class="fas fa-eye"></i></span>
+                                        </div>
+                                        <br />
+                                        <button class="w-100 btn btn-lg btn btn-outline-primary mt-3" type="submit" onsubmit="functionLogin()">Đăng nhập</button>
+                                    </form>
+                                    <div id="loading" style="display:none; text-align:center">Đang nạp...</div>
+                                </div>
+                                <div class="card-footer text-center py-3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <div id="layoutAuthentication_footer">
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Digital Factory by BITIS<div>Vrs: @ViewBag.vrs </div></div>
+                        <div>
+                            <div>
+                                @DateTime.Now
+                            </div>
+                            <span class="device-name"><span></span>.</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <style>
+        #loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.5);
+            z-index: 9999;
+        }
+
+            #loading::before {
+                content: "";
+                display: block;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(0deg); /* giữa màn hình và xoay tròn ban đầu */
+                border: 2px solid #ccc;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                border-top-color: #007bff;
+                animation: spin 1s linear infinite;
+            }
+
+        @@keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg); /* xoay 360 độ tròn giữa màn hình */
+            }
+        }
+    </style>
+    <style>
+        .toggle-btn {
+            width: 70px;
+            height: 35px;
+            background-color: gray;
+            border-radius: 25px;
+            cursor: pointer;
+            position: relative;
+        }
+
+            .toggle-btn::before {
+                content: "";
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                width: 30px;
+                height: 30px;
+                background-color: white;
+                border-radius: 50%;
+                transition: transform 0.2s ease-in;
+            }
+
+            .toggle-btn.on {
+                background-color: #0d6efd;
+            }
+
+                .toggle-btn.on::before {
+                    transform: translateX(35px);
+                }
+    </style>
+    <script src="~/Assets/assets_moi/login.min.js"></script>
+    <script src="~/Assets/assets_moi/sweetalertlogin.min.js"></script>
+    <script src="~/Assets/assets_moi/wurfl.js"></script>
+    <script>
+        function toggleButton() {
+            var btn = document.querySelector('.toggle-btn');
+            btn.classList.toggle('on');
+        }
+    </script>
+    <script type="text/javascript" src="~/Assets/js/login.js"></script>
+    <!---nút ẩn hiện mật khẩu-->
+    <script>
+        $(function () {
+            // Bắt sự kiện click vào nút ẩn/hiện mật khẩu
+            $('#toggle-Password').on('click', function () {
+                var input = $('#Password');
+                var icon = $(this).find('i');
+
+                // Thay đổi kiểu hiển thị của input
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

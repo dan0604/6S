@@ -1,0 +1,70 @@
+@charset "UTF-8";
+#loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 9999;
+}
+
+    #loading::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(0deg); /* giữa màn hình và xoay tròn ban đầu */
+        border: 2px solid #ccc;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border-top-color: #007bff;
+        animation: spin 1s linear infinite;
+    }
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg); /* xoay 360 độ tròn giữa màn hình */
+    }
+}
+
+/* Định nghĩa lớp CSS tùy chỉnh cho modal-dialog */
+.my-custom-dialog {
+    max-width: 1400px; /* Chiều rộng tối đa của modal */
+    margin: 1.75rem auto; /* Canh giữa modal theo trục ngang */
+}
+
+.dropdown-menu {
+    max-height: 300px; /* Đặt chiều cao tùy chỉnh, điều chỉnh theo ý muốn */
+    overflow-y: auto; /* Thêm thanh cuộn nếu cần thiết */
+}
+
+* {
+    font-family: sans-serif;
+}
+/* Ghi đè lên max-width của modal-content */
+.modal-content {
+    max-width: none; /* Loại bỏ giới hạn chiều rộng */
+}
+
+.modal-xl {
+    max-width: 90%; /* Điều chỉnh chiều rộng tùy ý ở đây */
+}
+
+.custom-textarea {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    height: 170px; /* Đặt kích thước ban đầu */
+}
+/*thuộc tính ở phancong*/
+.hidden-value {
+    display: none;
+}

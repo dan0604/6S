@@ -1,0 +1,762 @@
+﻿@model IEnumerable<_6S.Context.Tbl_User>
+@{
+    ViewBag.Title = "Danh sách người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Tài khoản người dùng</h1>
+                        <br />
+                        <div class="col-12">
+                            <button type="button" class="btn btn-outline-primary" id="openModalButton"><i class="fas fa-plus"></i>Tạo USER mới</button>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped" style="text-align:center">
+                                <thead>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Username</th>
+                                        <th>Fullname</th>
+                                        <th>NhomQuyen</th>
+                                        <th>PhongBan</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        var i = 1;
+                                        foreach (var item in Model)
+                                        {
+                                            <tr id="trow_@item.ID_User">
+                                                <td>@i</td>
+                                                <td>@item.Username</td>
+                                                <td>@item.Fullname</td>
+                                                <td>@item.NhomQuyen</td>
+                                                <td>@item.ID_PhongBan</td>
+                                                <td>@item.Status</td>
+                                                <td class="dropdown btn-group">
+                                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <li>
+                                                            <a href="javascript:void(0);" data-id="@item.Username" class="btn btn-outline-danger btnDelete"><i class="fas fa-trash" title="Xóa username @item.Username"></i></a>
+                                                            <a href="javascript:void(0);" data-id="@item.Username" class="btn btn-outline-warning btnEdit"><i class="fas fa-edit" title="Sửa username @item.Username"></i></a>
+                                                            <a href="javascript:void(0);" data-id="@item.Username" class="btn btn-outline-info btnEdit_Pass"><i class="fas fa-key" title="Đổi mật khẩu username @item.Username"></i></a>
+                                                            @{
+                                                                var session = (_6S.Context.Tbl_User)Session["UserLogin"];
+                                                                if (session.NhomQuyen == 1000)
+                                                                {
+                                                                    <a href="javascript:void(0);" data-id="@item.Username" class="btn btn-outline-dark Reset_Pass"><i class="fas fa-gavel" title="Reset username @item.Username"></i></a>
+                                                                }
+                                                                else
+                                                                {
+                                                                }
+                                                            }
+                                                        </li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td style="text-align:center" colspan="7">Không có bản ghi nào</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Username</th>
+                                        <th>Fullname</th>
+                                        <th>NhomQuyen</th>
+                                        <th>PhongBan</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+        <!-- Thêm cửa sổ modal thêm -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalAdd" aria-labelledby="myModalTitle" aria-hidden="true">
+            <div class="modal-dialog my-custom-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Bảng dữ liệu thêm mới thông tin người dùng</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("Add_user", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.ValidationSummary(true)
+                            @Html.AntiForgeryToken()
+                            <section class="content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card card-primary">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Thông tin tài khoản</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="Username">Username</label>
+                                                    <input type="email" id="Username" required="" name="Username" class="form-control"
+                                                           pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)([a-zA-Z0-9._%+-]+[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$" title="Vui lòng bao gồm ít nhất 1 ký tự viết hoa, 1 ký tự viết thường và 1 số."
+                                                           oninvalid="this.setCustomValidity('Vui lòng nhập Username đúng định dạng example@example.com')"
+                                                           oninput="setCustomValidity('')" autocomplete="on" aria-required="true" placeholder="name@example.com">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputName">Mật khẩu</label>
+                                                    <input type="password" id="matkhau" required="" name="Pass" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputName">Mã nhân viên</label>
+                                                    <input type="text" id="Manv" required="" name="Manv" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputName">Họ và tên</label>
+                                                    <input type="text" id="Fullname" required="" name="Fullname" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card card-secondary">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Chức năng tài khoản</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="inputStatus">Chọn trạng thái</label>
+                                                    <select name="Status" class="form-control select2bs4" required="" runat="server">
+                                                        <option value="0">Không sử dụng</option>
+                                                        <option value="1">Đang sử dụng</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputStatus">Chọn phòng ban </label>
+                                                    @{
+                                                        _6S.Context.Model_6S db = new _6S.Context.Model_6S();
+                                                        var PhongBan_Add = db.Tbl_PhongBan.Where(x =>x.Status == 1).ToList();
+                                                        <select name="ID_PhongBan" class="form-control select2bs4" required="" runat="server">
+                                                            @foreach (var item in PhongBan_Add)
+                                                            {
+                                                                <option value="@item.ID_PhongBan">@item.TenPhongBan</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputStatus">Chọn quyền tài khoản</label>
+                                                    @{
+                                                        var NhomQuyen_Add = db.Tbl_MoTaNhomQuyen.Where(x => x.Status == 1).ToList();
+                                                        <select name="NhomQuyen" class="form-control select2bs4" required="" runat="server">
+                                                            @foreach (var item in NhomQuyen_Add)
+                                                            {
+                                                                <option value="@item.ID_NhomQuyen">@item.TenQuyen</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a href="/User/Index_user" class="btn btn-outline-secondary"><i class='fas fa-ban'></i>Hủy</a>
+                                        <button type="submit" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                                    </div>
+                                </div>
+                            </section> <!-- /.content -->
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!---sửa-->
+        <!-- Modal form -->
+        <div class="modal" id="editModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*@{
+                                var firstUser = Model.FirstOrDefault();
+                                var fullname = (firstUser != null) ? firstUser.Fullname : null;
+                                var ID_PhongBan = (firstUser != null) ? firstUser.ID_PhongBan : null;
+                                var NhomQuyen = (firstUser != null) ? firstUser.NhomQuyen : null;
+                            }*@
+                        @{
+                            string fullname = null;
+                            string ID_PhongBan = null;
+                            int? NhomQuyen = null;
+                            int? Status = null;
+
+                            foreach (var user in Model)
+                            {
+                                if (user.Fullname != null)
+                                {
+                                    fullname = user.Fullname;
+                                    ID_PhongBan = user.ID_PhongBan;
+                                    NhomQuyen = user.NhomQuyen;
+                                    Status = user.Status ?? 0;
+                                    break;
+                                }
+                            }
+                        }
+                        <h5 class="modal-title" ></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+                            <div class="form-group">
+                                <label for="inputName">Email</label>
+                                <input type="text" id="editUsername" required="" name="Username" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName">Mã nhân viên</label>
+                                <input type="text" id="editManv" required="" name="Manv" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName">Tên đầy đủ</label>
+                                <input type="text" id="editFullname" required="" name="Fullname" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputStatus">Chọn phòng ban </label>
+                                @{
+                                    _6S.Context.Model_6S db_edit = new _6S.Context.Model_6S();
+                                    var PhongBan_edit_bk = db_edit.Tbl_PhongBan.Where(x => x.Status == 1).ToList();
+                                }
+                                <select name="ID_PhongBan" id="editIDPhongBan" class="form-control select2bs4" required="" runat="server">
+                                    @foreach (var item in PhongBan_edit_bk)
+                                    {
+                                        <option value="@item.ID_PhongBan" @Html.Raw(item.ID_PhongBan == @ID_PhongBan ? "selected" : "")>
+                                            @item.TenPhongBan
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputStatus">Chọn quyền tài khoản </label>
+                                @{
+                                    var NhomQuyen_eidt = db_edit.Tbl_MoTaNhomQuyen.Where(x => x.Status == 1).ToList();
+                                }
+                                <select name="NhomQuyen" id="editNhomQuyen" class="form-control select2bs4" required="" runat="server">
+                                    @foreach (var item in NhomQuyen_eidt)
+                                    {
+                                        <option value="@item.ID_NhomQuyen" @Html.Raw(item.ID_NhomQuyen == @NhomQuyen ? "selected" : "")>
+                                            @item.TenQuyen
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputStatus">Chọn trạng thái</label>
+                                <select id="editStatus" name="Status" class="form-control select2bs4" required runat="server">
+                                    <option value="0">Không sử dụng</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnCancel" class="btn btn-outline-secondary" data-dismiss="modal"><i class='fas fa-ban'></i>Hủy</button>
+                        <button type="submit" id="btnSave" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Form sửa User (ẩn ban đầu) -->
+        <!---Đổi mật khẩu-->
+        <div class="modal" id="editModal_Pass" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm_Pass">
+                            <div class="form-group">
+                                <label for="inputName">Mật khẩu củ</label>
+                                <input type="password" id="Pass_Old" required="" name="Pass_Old" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName">Mật khẩu mới</label>
+                                <input type="password" id="Pass_New" required="" name="Pass_New" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName">Nhập lại mật khẩu</label>
+                                <input type="password" id="Re_Pass_New" required="" name="Re_Pass_New" class="form-control">
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnCancel_Pass" class="btn btn-outline-secondary" data-dismiss="modal"><i class='fas fa-ban'></i>Hủy</button>
+                        <button type="submit" id="btnSave_Pass" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .link {
+                display: none;
+            }
+        </style>
+    </div>
+</section>
+@section scripts{
+    <!---mở form thêm-->
+    <script>
+        $(document).ready(function () {
+            // Xác định button mở form và thêm sự kiện click vào
+            $('#openModalButton').click(function () {
+                // Mở cửa sổ Modal
+                $('#myModalAdd').modal('show');
+            });
+            $('.close').on('click', function (e) {
+                $('#myModalAdd').modal('hide');
+            });
+        });
+    </script>
+    <!---Xóa-->
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btnDelete', function () {
+                var Username = $(this).data("id");
+                var Status = 0;
+                Swal.fire({
+                    title: 'Bạn chắc chắn muốn xóa user này ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, xóa nó',
+                    cancelButtonText: 'Không, hủy bỏ',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Delete_user',
+                            type: 'POST',
+                            data: { Username: Username, Status: Status },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa User: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///kích hoạt
+        $(document).ready(function () {
+            $('body').on('click', '.btnActive', function () {
+                var Username = $(this).data("Username");
+                Swal.fire({
+                    title: 'Bạn có muốn kích hoạt user này không ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, gửi nó',
+                    cancelButtonText: 'Hủy',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Active_user',
+                            type: 'POST',
+                            data: { Username: Username },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///duyệt
+        $(document).ready(function () {
+            $('body').on('click', '.btnApprove', function () {
+                var Username = $(this).data("Username");
+                Swal.fire({
+                    title: 'Bạn có muốn duyệt quyền cho user này không ?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, duyệt nó',
+                    cancelButtonText: 'Không',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Approve_user',
+                            type: 'POST',
+                            data: { Username: Username },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+    </script>
+    <!---sửa-->
+    <script>
+        $('.btnEdit').click(function () {
+            var Username = $(this).data('id');
+            // Gửi yêu cầu AJAX để lấy dữ liệu người dùng từ server
+            $.ajax({
+                url: 'Edit_user',
+                type: 'GET',
+                data: { Username: Username },
+                success: function (response) {
+                    // Hiển thị dữ liệu người dùng lên modal form
+                    $('#editUsername').val(response.Username);
+                    $('#editManv').val(response.Manv);
+                    $('#editFullname').val(response.Fullname);
+                    $('#editNhomQuyen').val(response.NhomQuyen);
+                    $('#editStatus').val(response.Status);
+                    var selectedStatus = response.Status;
+                    console.log('Status: ', selectedStatus);
+
+                    // Determine the new value and text based on selectedStatus
+                    var newValue, newText;
+                    if (selectedStatus === 0) {
+                        newValue = '0';
+                        newText = 'Không sử dụng';
+                    } else {
+                        newValue = '1';
+                        newText = 'Đang sử dụng';
+                    }
+
+                    // Add or update the option
+                    var statusDropdown = $('#editStatus');
+                    statusDropdown.find('option[value="' + newValue + '"]').remove(); // Remove existing option if it exists
+                    statusDropdown.append($('<option>', {
+                        value: newValue,
+                        text: newText
+                    }));
+
+                    // Set the selected option
+                    statusDropdown.val(newValue);
+
+
+                    // Add an option for "Đang sử dụng" with a value of 1
+                    $('#editStatus').append($('<option>', {
+                        value: '1',
+                        text: 'Đang sử dụng'
+                    }));
+
+                    // Thiết lập selectedID_PhongBan
+                    var selectedID_PhongBan = response.ID_PhongBan;
+                    console.log('ID_PhongBan: ', selectedID_PhongBan);
+                    // Duyệt qua tất cả các option trong dropdown và đặt thuộc tính selected
+                    $('#editIDPhongBan option').each(function () {
+                        var option = $(this);
+                        if (option.val() === selectedID_PhongBan) {
+                            option.prop('selected', true);
+                        }
+                    });
+                    var fullname = $('#editFullname').val();
+                    $('.modal-title').html('Sửa thông tin User: ' + fullname);
+                    // Mở modal form
+                    $('#editModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire('Lỗi khi lấy dữ liệu người dùng: ' + error);
+                }
+            });
+        });
+        $('#btnCancel').click(function () {
+            // Xử lý khi nút Hủy được nhấn
+            $('#editModal').modal('hide');
+        });
+        $('.close').on('click', function (e) {
+            $('#editModal').modal('hide');
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Edit button click event handler
+            $('.btnEdit').click(function () {
+                var username = $(this).data('id');
+                $('#editUsername').val(username);
+                $('#editModal').modal('show');
+            });
+            $('#btnSave').click(function () {
+                var editedUser = {
+                    Username: $('#editUsername').val(),
+                    Manv: $('#editManv').val(),
+                    Fullname: $('#editFullname').val(),
+                    NhomQuyen: $('#editNhomQuyen').val(),
+                    ID_PhongBan: $('#editIDPhongBan').val(),
+                    Status: $('#editStatus').val()
+                };
+                $.ajax({
+                    url: 'Edit_user',
+                    type: 'POST',
+                    data: editedUser,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Thành công', response.message, 'success');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            Swal.fire('Thất bại', response.message, 'error');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
+                        // Close the modal form
+                        $('#editModal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        // Display error message
+                        Swal.fire('Lỗi', 'Lỗi khi cập nhật thông tin User: ' + error, 'error');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                        // Close the modal form
+                        $('#editModal').modal('hide');
+                    }
+                });
+            });
+        });
+    </script>
+    <!---Đổi mật khẩu-->
+    <script>
+        $(document).ready(function () {
+            var username;
+            // Edit button click event handler
+            $('.btnEdit_Pass').click(function () {
+                username = $(this).data('id');
+                console.log('Username: ', username);
+                $('.modal-title').html('Sửa thông tin User: ' + username);
+                $('#editModal_Pass').modal('show');
+            });
+            $('#btnSave_Pass').click(function () {
+                var editedUser_Pass = {
+                    Username: username,
+                    Pass_Old: $('#Pass_Old').val(),
+                    Pass_New: $('#Pass_New').val(),
+                    Re_Pass_New: $('#Re_Pass_New').val(),
+                };
+                $.ajax({
+                    url: 'Edit_Pass',
+                    type: 'POST',
+                    data: editedUser_Pass,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Thành công', response.message, 'success');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            Swal.fire('Thất bại', response.message, 'error');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
+                        // Close the modal form
+                        $('#editModal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        // Display error message
+                        Swal.fire('Lỗi', 'Lỗi khi cập nhật mật khẩu User: ' + error, 'error');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                        // Close the modal form
+                        $('#editModal_Pass').modal('hide');
+                    }
+                });
+            });
+        });
+        $('#btnCancel_Pass').click(function () {
+            // Xử lý khi nút Hủy được nhấn
+            $('#editModal_Pass').modal('hide');
+        });
+        $('.close').on('click', function (e) {
+            $('#editModal_Pass').modal('hide');
+        });
+    </script>
+    <!---Khôi phục mật khẩu-->
+    <script>
+        $(document).ready(function () {
+            $('.Reset_Pass').click(function () {
+                var username = $(this).data('id');
+                console.log('Username', username);
+                var editedUser_Pass = {
+                    Username: username,
+                };
+                $.ajax({
+                    url: 'Reset_Pass',
+                    type: 'POST',
+                    data: editedUser_Pass,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Thành công', response.message, 'success');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            Swal.fire('Thất bại', response.message, 'error');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Display error message
+                        Swal.fire('Lỗi', 'Lỗi khi cập nhật mật khẩu User: ' + error, 'error');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    }
+                });
+            });
+        });
+    </script>
+    <!--Hiển thị thông báo từ return Viewbag của controller-->
+    @{
+        // Lấy giá trị từ ViewBag và truyền vào mã nguồn JavaScript
+        string message = ViewBag.message != null ? ViewBag.message.ToString() : "";
+        string error = ViewBag.error != null ? ViewBag.error.ToString() : "";
+    }
+    <script>
+            $(document).ready(function() {
+                if('@message' !== "") {
+                    swal('@Html.Raw(message)');
+
+                    swal({
+                        title: '@Html.Raw(message)',
+                        text: 'Thành công!',
+                        icon: 'success',
+                         timer: 2000
+                    }).then(function () {
+                        window.location.href = "Index_user";
+                    });
+                }
+                if('@error' !== "") {
+                    swal({
+                        title: '@Html.Raw(error)',
+                        icon: 'error',
+                      buttons: {
+                        ok: "OK"
+                      }
+                    })
+                    .then((value) => {
+                        if (value) {
+                            // Delay the redirection by a few seconds
+                            setTimeout(function () {
+                                window.location.href = "Index_user";
+                            }, 2000); // Wait for 2 seconds before redirecting
+                        }
+                    });
+                }
+            });
+    </script>
+}
+

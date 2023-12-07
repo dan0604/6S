@@ -1,0 +1,481 @@
+﻿@model IEnumerable<_6S.Context.Tbl_NhanVienCaiTien>
+@{
+    ViewBag.Title = "Danh sách nhân viên tổ cải tiến";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Tài khoản người dùng</h1>
+                        <br />
+                        <div class="col-12">
+                            <button type="button" class="btn btn-outline-primary" id="openModalButton"><i class="fas fa-plus"></i>Tạo Nhân viên cải tiến mới</button>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped" style="text-align:center">
+                                <thead>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Tên nhân viên</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        var i = 1;
+                                        foreach (var item in Model)
+                                        {
+                                            <tr id="trow_@item.ID">
+                                                <td>@i</td>
+                                                <td>@item.TenNV</td>
+                                                <td class="dropdown btn-group">
+                                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <li>
+                                                            <a href="javascript:void(0);" data-id="@item.ID" class="btn btn-outline-danger btnDelete"><i class="fas fa-trash" title="Xóa ID @item.ID"></i></a>
+                                                            <a href="javascript:void(0);" data-id="@item.ID" class="btn btn-outline-warning btnEdit"><i class="fas fa-edit" title="Sửa ID @item.ID"></i></a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td style="text-align:center" colspan="7">Không có bản ghi nào</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Tên nhân viên</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+        <!-- Thêm cửa sổ modal thêm -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalAdd" aria-labelledby="myModalTitle" aria-hidden="true">
+            <div class="modal-dialog my-custom-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Bảng dữ liệu thêm mới thông tin người dùng</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addEmployeeForm" method="post" enctype="multipart/form-data">
+                            <section class="content">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card card-primary">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Thông tin Nhân viên cải tiến</h3>
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="inputName">Họ và tên</label>
+                                                    <input type="text" id="TenNV" required="" name="TenNV" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a href="/NhanVienCaiTien/Index_NhanVienCaiTien" class="btn btn-outline-secondary">
+                                            <i class='fas fa-ban'></i> Hủy
+                                        </a>
+                                        <button type="button" onclick="addEmployee()" class="btn btn-outline-success float-right">
+                                            <i class='fas fa-check'></i> Xác nhận
+                                        </button>
+                                    </div>
+                                </div>
+                            </section> <!-- /.content -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!---sửa-->
+        <!-- Modal form -->
+        <div class="modal" id="editModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @{
+                            string TenNV = null;
+
+                            foreach (var NhanVienCaiTien in Model)
+                            {
+                                if (NhanVienCaiTien.TenNV != null)
+                                {
+                                    TenNV = NhanVienCaiTien.TenNV;
+                                }
+                            }
+                        }
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+                            <div class="form-group">
+                                <label for="inputName">Email</label>
+                                <input type="text" id="editID" required="" name="ID" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName">Mã nhân viên</label>
+                                <input type="text" id="editTenNV" required="" name="TenNV" class="form-control">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnCancel" class="btn btn-outline-secondary" data-dismiss="modal"><i class='fas fa-ban'></i>Hủy</button>
+                        <button type="submit" id="btnSave" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Form sửa NhanVienCaiTien (ẩn ban đầu) -->
+        <!---Đổi mật khẩu-->
+        <div class="modal" id="editModal_Pass" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm_Pass">
+                            <div class="form-group">
+                                <label for="inputName">Mật khẩu củ</label>
+                                <input type="password" id="Pass_Old" required="" name="Pass_Old" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName">Mật khẩu mới</label>
+                                <input type="password" id="Pass_New" required="" name="Pass_New" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName">Nhập lại mật khẩu</label>
+                                <input type="password" id="Re_Pass_New" required="" name="Re_Pass_New" class="form-control">
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnCancel_Pass" class="btn btn-outline-secondary" data-dismiss="modal"><i class='fas fa-ban'></i>Hủy</button>
+                        <button type="submit" id="btnSave_Pass" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .link {
+                display: none;
+            }
+        </style>
+    </div>
+</section>
+@section scripts{
+    <!---mở form thêm-->
+    <script>
+        $(document).ready(function () {
+            // Xác định button mở form và thêm sự kiện click vào
+            $('#openModalButton').click(function () {
+                // Mở cửa sổ Modal
+                $('#myModalAdd').modal('show');
+            });
+            $('.close').on('click', function (e) {
+                $('#myModalAdd').modal('hide');
+            });
+        });
+    </script>
+    <!--Thêm-->
+    <script>
+        function addEmployee() {
+            var tenNV = document.getElementById("TenNV").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/NhanVienCaiTien/Add_NhanVienCaiTien", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đã tạo tài khoản 6S thành công',
+                                text: response.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    setTimeout(function () {
+                                        window.location.href = response.redirectUrl;
+                                    }, 2000);
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Đã xảy ra lỗi',
+                                text: 'Thêm mới nhân viên thất bại!'
+                            });
+                        }
+                    } else {
+                        console.error('Đã xảy ra lỗi!');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ TenNV: tenNV }));
+        }
+    </script>
+    <!---Xóa-->
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btnDelete', function () {
+                var ID = $(this).data("id");
+                var Status = 0;
+                Swal.fire({
+                    title: 'Bạn chắc chắn muốn xóa NhanVienCaiTien này ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, xóa nó',
+                    cancelButtonText: 'Không, hủy bỏ',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Delete_NhanVienCaiTien',
+                            type: 'POST',
+                            data: { ID: ID, Status: Status },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa NhanVienCaiTien: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///kích hoạt
+        $(document).ready(function () {
+            $('body').on('click', '.btnActive', function () {
+                var ID = $(this).data("ID");
+                Swal.fire({
+                    title: 'Bạn có muốn kích hoạt NhanVienCaiTien này không ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, gửi nó',
+                    cancelButtonText: 'Hủy',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Active_NhanVienCaiTien',
+                            type: 'POST',
+                            data: { ID: ID },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///duyệt
+        $(document).ready(function () {
+            $('body').on('click', '.btnApprove', function () {
+                var ID = $(this).data("ID");
+                Swal.fire({
+                    title: 'Bạn có muốn duyệt quyền cho NhanVienCaiTien này không ?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, duyệt nó',
+                    cancelButtonText: 'Không',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Approve_NhanVienCaiTien',
+                            type: 'POST',
+                            data: { ID: ID },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+    </script>
+    <!---sửa-->
+    <script>
+        $('.btnEdit').click(function () {
+            var ID = $(this).data('id');
+            // Gửi yêu cầu AJAX để lấy dữ liệu người dùng từ server
+            $.ajax({
+                url: 'Edit_NhanVienCaiTien',
+                type: 'GET',
+                data: { ID: ID },
+                success: function (response) {
+                    // Hiển thị dữ liệu người dùng lên modal form
+                    $('#editID').val(response.ID);
+                    $('#editTenNV').val(response.TenNV);                    
+                    var TenNV = $('#editTenNV').val();
+                    $('.modal-title').html('Sửa thông tin NhanVienCaiTien: ' + TenNV);
+                    // Mở modal form
+                    $('#editModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire('Lỗi khi lấy dữ liệu người dùng: ' + error);
+                }
+            });
+        });
+        $('#btnCancel').click(function () {
+            // Xử lý khi nút Hủy được nhấn
+            $('#editModal').modal('hide');
+        });
+        $('.close').on('click', function (e) {
+            $('#editModal').modal('hide');
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Edit button click event handler
+            $('.btnEdit').click(function () {
+                var ID = $(this).data('id');
+                $('#editID').val(ID);
+                $('#editModal').modal('show');
+            });
+            $('#btnSave').click(function () {
+                var editedNhanVienCaiTien = {
+                    ID: $('#editID').val(),
+                    TenNV: $('#editTenNV').val(),
+                };
+                $.ajax({
+                    url: 'Edit_NhanVienCaiTien',
+                    type: 'POST',
+                    data: editedNhanVienCaiTien,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Thành công', response.message, 'success');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            Swal.fire('Thất bại', response.message, 'error');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
+                        // Close the modal form
+                        $('#editModal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        // Display error message
+                        Swal.fire('Lỗi', 'Lỗi khi cập nhật thông tin NhanVienCaiTien: ' + error, 'error');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                        // Close the modal form
+                        $('#editModal').modal('hide');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+

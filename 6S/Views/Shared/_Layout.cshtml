@@ -1,0 +1,408 @@
+﻿@{
+    ViewBag.vrs = "1.0.0";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi-VN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Phần mềm 6S BITIS" />
+    <meta name="author" content="bitisgroup" />
+    <meta http-equiv="refresh" content="3000">
+    <title>BITIS 6S - @ViewBag.Title</title>
+    <meta name="bitisgroup" content="Phần mềm 6S BITIS by IT duongchidan phiên bản @ViewBag.vrs" />
+    <link runat="server" rel="icon" href="~/Assets/images/6S_Logo_update.ico" type="image/x-icon" />
+    <link href="~/Assets/css/styles.css" rel="stylesheet" />
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/Assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Assets/dist/css/adminlte.min.css">
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="~/Assets/plugins/fullcalendar/main.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Assets/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="~/Assets/plugins/fontawesome-free/css/font-awesome.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/Assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="~/Assets/plugins/toastr/toastr.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Assets/dist/css/adminlte.min.css">
+    <!-- Font Awesome -->
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="~/Assets/plugins/daterangepicker/daterangepicker.css">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="~/Assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Bootstrap Color Picker -->
+    <link rel="stylesheet" href="~/Assets/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="~/Assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/Assets/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/Assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- Bootstrap4 Duallistbox -->
+    <link rel="stylesheet" href="~/Assets/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+    <!-- BS Stepper -->
+    <link rel="stylesheet" href="~/Assets/plugins/bs-stepper/css/bs-stepper.min.css">
+    <!-- dropzonejs -->
+    <link rel="stylesheet" href="~/Assets/plugins/dropzone/min/dropzone.min.css">
+    <link rel="stylesheet" href="~/Assets/assets_moi/all.min.css">
+    <link rel="stylesheet" href="~/Assets/assets_moi/sweetalert2.min.css">
+    <!--css_moi-->
+    <link rel="stylesheet" href="~/Assets/css/styles_moi_shared.css">
+
+    @RenderSection("styles", required: false)
+</head>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="@Url.Action("Dashboard_checklist","Dashboard")">Phần mềm đánh giá 6S </a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown no-arrow d-sm-none">
+                    <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                </li>
+            </ul>
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ml-auto">
+            <!-- Navbar Search -->
+            <li class="nav-item">
+                <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+                    <i class="fas fa-search"></i>
+                </a>
+                <div class="navbar-search-block">
+                    <form class="form-inline">
+                        <div class="input-group input-group-sm">
+                            <input class="form-control form-control-navbar" type="search" placeholder="Tìm kiếm" aria-label="Tìm kiếm">
+                            <div class="input-group-append">
+                                <button class="btn btn-navbar" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            <li class="btn-group">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li>
+                        @{
+                            var session = (_6S.Context.Tbl_User)Session["UserLogin"];
+                            <div class="dropdown-item">
+                                @if (session != null)
+                                {
+                                    <p>Họ và Tên: @Session["Fullname"]</p>
+                                    <p>Tài khoản: @Session["Username"]</p>
+                                    if (session.Status == 1)
+                                    {
+                                        <p title="Trạng thái: Đang hoạt động" class="badge bg-success">Đang hoạt động</p>
+                                    }
+                                }
+                                else
+                                {
+                                    <script type="text/javascript">
+                                        window.location.href = '@Url.Action("LogOff", "Login")';
+                                    </script>
+                                }
+                            </div>
+                        }
+                    <li><a href="@Url.Action("LogOff","Login")" title="Đăng xuất" class="btn btn-outline-warning loadingLink">Đăng xuất</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="loading" style="display: none; text-align: center;">Đang nạp...</div>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <nav class="mt-2">
+                            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                                <li class="nav-item menu-open">
+                                    <a href="@Url.Action("Dashboard_checklist","Dashboard")" class="nav-link active">
+                                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                                        <p>
+                                            Dashboard
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-header">Báo cáo 6S</li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-copy"></i>
+                                        <p>
+                                            Đánh giá
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="@Url.Action("Index_checklist","Home")" class="nav-link loadingLink">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Danh sách đánh giá</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-header">Lịch làm và mục tiêu tháng</li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-calendar-alt"></i>
+                                        <p>
+                                            Danh sách lịch làm
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="@Url.Action("Index_PhanCong", "PhanCong")" class="nav-link loadingLink">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Danh sách lịch làm việc</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="@Url.Action("Index_NhanVienCaiTien", "NhanVienCaiTien")" class="nav-link loadingLink">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Danh sách nhân viên cải tiến</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-arrows-alt"></i>
+                                        <p>
+                                            Mục tiêu tháng
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="@Url.Action("Index_MucTieu", "MucTieu")" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Danh sách mục tiêu</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                @{
+                                    if (session != null)
+                                    {
+                                        if (session.NhomQuyen == 1000)
+                                        {
+                                            <li class="nav-header">Cấu hình hệ thống</li>
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link">
+                                                    <i class="nav-icon fas fa-square"></i>
+                                                    <p>
+                                                        Tham số đầu vào
+                                                        <i class="right fas fa-angle-left"></i>
+                                                    </p>
+                                                </a>
+                                                <ul class="nav nav-treeview">
+                                                    <li class="nav-item">
+                                                        <a href="@Url.Action("Index_NhomQuyen", "NhomQuyen")" class="nav-link loadingLink">
+                                                            <i class="far fa-circle nav-icon"></i>
+                                                            <p>Nhóm quyền</p>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="@Url.Action("Index_PhongBan", "PhongBan")" class="nav-link loadingLink">
+                                                            <i class="far fa-circle nav-icon"></i>
+                                                            <p>Phòng ban</p>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="nav-header">Tài khoản người dùng</li>
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link">
+                                                    <i class="nav-icon fas fa-user-alt"></i>
+                                                    <p>
+                                                        Tài khoản
+                                                        <i class="fas fa-angle-left right"></i>
+                                                    </p>
+                                                </a>
+                                                <ul class="nav nav-treeview">
+                                                    <li class="nav-item">
+                                                        <a href="@Url.Action("Index_User","User")" class="nav-link loadingLink">
+                                                            <i class="far fa-circle nav-icon"></i>
+                                                            <p>Danh sách tài khoản</p>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <script type="text/javascript">
+                                            window.location.href = '@Url.Action("LogOff", "Login")';
+                                        </script>
+                                    }
+                                }
+                                <li class="nav-header">Tài liệu hướng dẫn</li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-edit"></i>
+                                        <p>
+                                            Hỗ trợ người dùng
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="/Support/Index_support" class="nav-link loadingLink">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Trang hỗ trợ người dùng</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Digital Factory by BITIS<div>Vrs: @ViewBag.vrs</div></div>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4"></h1>
+                    @RenderBody()
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted"></div>
+                        <div>
+                            <a href="#">
+                                <div>@DateTime.Now</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script src="~/Assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="~/Assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/Assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/Assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/Assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/Assets/plugins/jszip/jszip.min.js"></script>
+    <script src="~/Assets/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/Assets/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/Assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/Assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/Assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Assets/dist/js/adminlte.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/Assets/plugins/select2/js/select2.full.min.js"></script>
+    <!-- Bootstrap4 Duallistbox -->
+    <script src="~/Assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <!-- InputMask -->
+    <script src="~/Assets/plugins/moment/moment.min.js"></script>
+    <script src="~/Assets/plugins/inputmask/jquery.inputmask.min.js"></script>
+    <!-- date-range-picker -->
+    <script src="~/Assets/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap color picker -->
+    <script src="~/Assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="~/Assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Bootstrap Switch -->
+    <script src="~/Assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+    <!-- BS-Stepper -->
+    <script src="~/Assets/plugins/bs-stepper/js/bs-stepper.min.js"></script>
+    <!-- dropzonejs -->
+    <script src="~/Assets/plugins/dropzone/min/dropzone.min.js"></script>
+    <!-- fullCalendar 2.2.5 -->
+    <script src="~/Assets/js/scripts.js"></script>
+    <script src="~/Assets/js/datatables-simple-demo.js"></script>
+    <script src="~/Assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/Assets/assets_moi/sweetalertlogin.min.js"></script>
+    <script src="~/Assets/assets_moi/cdn.js"></script>
+    <script src="~/Assets/assets_moi/all.min.js"></script>
+    @*<script src="~/Assets/assets_moi/sweetalert2.min.js"></script>
+        <script src="~/Assets/assets_moi/sweetalertlogin.min.js"></script>*@
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/Assets/js/dashboard.js"></script>
+    <script>
+        // Xác định tất cả thẻ a trong menu
+        $('.loadingLink').click(function () {
+            // Hiển thị loading
+            $('#loading').show();
+        });
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": true, "autoWidth": true,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-4:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+            });
+        });
+    </script>
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        })
+        $(function () {
+            //Date range picker
+            $('#reservation').daterangepicker()
+            $('#reservation_PhanCong_Edit').daterangepicker()
+        })
+    </script>
+</body>
+</html>
+

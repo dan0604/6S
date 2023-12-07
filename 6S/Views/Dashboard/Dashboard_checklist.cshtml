@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard_checklist";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <link rel="stylesheet" href="~/Assets/css/styles_moi_dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1 class="dashboard-title">DASHBOARD 6S</h1>
+        <div class="form-group">
+            <div class="input-group">
+                <label for="ThangNam" class="filter-label">Tháng đánh giá</label>
+                <input class="form-control shorter-input" type="month" required="" id="idThangNam" name="ThangNam">
+                <div class="export-dropdown">
+                    <select id="exportOptions" class="form-select select2bs4" onchange="exportFile()">
+                        <option>Chọn files kết xuất</option>
+                        <option value="pdf" class="pdf-option">PDF</option>
+                        <option value="excel" class="excel-option">Excel</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="report-container-one" id="rptpage_number_one">
+        <div class="report-header">
+            <div class="logo-container logo-left">
+                <img src="~/Assets/images/Vietnam_value.jpg" alt="Left Logo">
+            </div>
+            <div class="report-content">
+                <h2 class="text-center my-4">BÁO CÁO TỔNG KẾT ĐÁNH GIÁ 6S</h2>
+                <h4 id="displayValue"></h4>
+            </div>
+            <div class="logo-container logo-right">
+                <img src="~/Assets/images/Bitis_logo.jpg" alt="Right Logo">
+            </div>
+        </div>
+
+        <div class="section-title">
+            <h2>1. Kết quả đánh giá 6S</h2>
+        </div>
+        <div class="section-title">
+            <table>
+                <tr>
+                    <td class="yellow-bg" id="mergedValuesone"></td>
+                    <td class="yellow-border" id="mergedValuesthree"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="grid-container">
+            <div class="chart-container">
+                <h3>BÁO BÁO ĐÁNH GIÁ 6S</h3>
+                <canvas id="chart1" width="400" height="200"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>HÌNH ẢNH GHI NHẬN</h3>
+                <canvas id="chart2" width="400" height="200"></canvas>
+            </div>
+        </div>
+        <div class="section-title">
+            <table>
+                <tr>
+                    <td class="yellow-bg" id="mergedValuestwo"></td>
+                    <td class="yellow-border" id="mergedValuesfour"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="grid-container">
+            <div class="chart-container">
+                <h3>BÁO BÁO ĐÁNH GIÁ 6S</h3>
+                <canvas id="chart3" width="400" height="200"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>HÌNH ẢNH GHI NHẬN</h3>
+                <canvas id="chart4" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="report-container-two" id="rptpage_number_two">
+        <div class="section-title">
+            <h2>2. Kết quả đánh giá 6S</h2>
+        </div>
+        <div class="table-container">
+            <table id="tableDetail">
+                <thead>
+                    <tr>
+                        <th colspan="2" rowspan="2">Tên Phòng Ban</th>
+                        <th rowspan="2">Mục Tiêu</th>
+                        <th colspan="2">Chấm Nội Bộ</th>
+                        <th colspan="2">Chấm Chéo</th>
+                        <th colspan="2">Chấm Hiệu Chỉnh</th>
+                        <th rowspan="2">Tổng Điểm Tháng</th>
+                        <th style="display:none" rowspan="2">Điểm Trung Bình Khối</th>
+                    </tr>
+                    <tr>
+                        <th>Điểm Chấm Nội Bộ</th>
+                        <th>Tổng Hình Chấm Nội Bộ</th>
+                        <th>Điểm Chấm Chéo</th>
+                        <th>Tổng Hình Chấm Chéo</th>
+                        <th>Điểm Chấm Hiệu Chỉnh</th>
+                        <th>Tổng Hình Chấm Hiệu Chỉnh</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Các dòng dữ liệu sẽ được thêm vào đây từ JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="signature-table-container" id="rptpage_number_three">
+            <table id="signatureTable" class="vertical-signature-table">
+                <thead>
+                    <tr>
+                        <th class="center-align">PHÊ DUYỆT</th>
+                        <th class="center-align">TRÌNH KÝ</th>
+                    </tr>
+                    <tr>
+                        <th class="remove-border-bottom">Họ và tên: ____________________________________</th>
+                        <th class="remove-border-top">Họ và tên: ____________________________________</th>
+                    </tr>
+                    <tr>
+                        <th class="remove-bottom-border">Ngày: __________/____________/________________</th>
+                        <th class="remove-top-border">Ngày: __________/____________/________________</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</body>
+
+

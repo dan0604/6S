@@ -1,0 +1,370 @@
+﻿@model IEnumerable<_6S.Context.Tbl_Join_ALL>
+@{
+    ViewBag.Title = "Danh sách báo cáo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>DANH SÁCH CHECKLIST 6S</h3>
+                        <br />
+                        <div class="col-12">
+                            @if (ViewData["ButtonsOpenCR"] as bool? == true && ViewData["ButtonsOpenCR"] != null)
+                            {
+                                <button type="button" class="btn btn-outline-primary" id="openModalButton"><i class="fas fa-plus"></i>Tạo CHECKLIST mới</button>
+                            }
+                            else { }
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped" style="text-align:center">
+                            <thead>
+                                <tr>
+                                    @*<th>Số thứ tự</th>*@
+                                    <th>Mã báo cáo</th>
+                                    <th>Loại báo cáo</th>
+                                    <th>Phòng ban</th>
+                                    <th>Khối</th>
+                                    <th>Người tạo báo cáo</th>
+                                    <th>Ngày báo cáo</th>
+                                    <th>Tổng hình lỗi</th>
+                                    <th>Tổng lỗi</th>
+                                    <th>Tổng điểm</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    var i = 1;
+                                    foreach (var item in Model)
+                                    {
+
+                                        <tr id="trow_@item.baocao_H.ID">
+
+                                            @*<td>@i</td>*@
+                                            <td>@item.baocao_H.Ma_BC</td>
+                                            <td>@item.baocao_H.Loai_BC</td>
+                                            <td>@item.PhongBan.TenPhongBan</td>
+                                            <td>@item.Khoi.TenKhoi</td>
+                                            <td>@item.baocao_H.Username</td>
+                                            <td>@(item.baocao_H.Ngay_BC?.ToString("MM/yyyy") ?? "N/A")</td>
+                                            <td>@item.baocao_H.TongHinh</td>
+                                            <td>@item.baocao_H.Error</td>
+                                            <td>@item.baocao_H.Point</td>
+                                            <td class="dropdown btn-group">
+                                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa-solid fa-ellipsis"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                    <li>
+                                                        @if (ViewData["ButtonsOpenDelete"] as bool? == true && ViewData["ButtonsOpenDelete"] != null)
+                                                        {
+                                                            <a href="#" data-id="@item.baocao_H.Ma_BC" class="btn btn-outline-danger btnDelete" title="Xóa báo cáo 6S @item.baocao_H.Ma_BC"><i class="fas fa-trash"></i></a>
+                                                        }
+                                                        else { }
+                                                        @if (ViewData["ButtonsOpenBC"] as bool? == true && ViewData["ButtonsOpenUpdate"] != null)
+                                                        {
+                                                            <button class="btn btn-outline-primary" onclick="openPdfModal('@item.baocao_H.Ma_BC')" title="Xem báo cáo 6S @item.baocao_H.Ma_BC"><i class="fas fa-eye"></i></button>
+                                                        }
+                                                        else { }
+                                                        @if (ViewData["ButtonsOpenDownload"] as bool? == true && ViewData["ButtonsOpenDPC"] != null)
+                                                        {
+                                                            <button type="button" class="btn btn-outline-dark" title="Tải files báo cáo @item.baocao_H.Ma_BC" onclick="downloadPDF('@item.baocao_H.Ma_BC')">
+                                                                <i class="fas fa-download"></i>
+                                                            </button>
+                                                        }
+                                                        else { }
+                                                    </li>
+                                                    <li>
+                                                    <li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td style="text-align:center" colspan="10">Không có bản ghi nào</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    @*<th>Số thứ tự</th>*@
+                                    <th>Mã báo cáo</th>
+                                    <th>Loại báo cáo</th>
+                                    <th>Phòng ban</th>
+                                    <th>Khối</th>
+                                    <th>Người tạo báo cáo</th>
+                                    <th>Ngày báo cáo</th>
+                                    <th>Tổng hình lỗi</th>
+                                    <th>Tổng lỗi</th>
+                                    <th>Tổng điểm</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- Thêm cửa sổ modal -->
+    @{ Html.RenderPartial("Add_checklist"); }
+    <!---View files PDF-->
+    @{ Html.RenderPartial("ViewPdf_checklist"); }
+</section>
+@section scripts{
+    <!--Hiển thị thông báo từ return Viewbag của controller-->
+    @{
+        // Lấy giá trị từ ViewBag và truyền vào mã nguồn JavaScript
+        string message = ViewBag.message != null ? ViewBag.message.ToString() : "";
+        string errorCount = ViewBag.errorCount != null ? ViewBag.errorCount.ToString() : "";
+    }
+    <script>
+            $(document).ready(function() {
+                if('@message' !== "") {
+                    swal('@Html.Raw(message)');
+
+                    swal({
+                        title: '@Html.Raw(message)',
+                        text: 'Thành công!',
+                        icon: 'success',
+                         timer: 2000
+                    }).then(function () {
+                        window.location.href = "Index_checklist";
+                    });
+                }
+                if('@errorCount' !== "") {
+                    swal({
+                        title: '@Html.Raw(errorCount)',
+                        icon: 'error',
+                        timer: 2000,
+                      buttons: {
+                        ok: "OK"
+                      }
+                    })
+                    .then((value) => {
+                        if (value) {
+                            // Delay the redirection by a few seconds
+                            setTimeout(function () {
+                                window.location.href = "Index_checklist";
+                            }, 2000); // Wait for 2 seconds before redirecting
+                        }
+                    });
+                }
+            });
+    </script>
+    <!---tải files-->
+    <script>
+        function downloadPDF(Ma_BC) {
+            Swal.fire({
+                title: 'Chuẩn bị tải xuống ...',
+                text: 'Vui lòng chờ ...',
+                icon: 'info',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            Ma_BC = encodeURIComponent(Ma_BC);
+            var downloadUrl = '@Url.Action("DownloadPDFFile", "Home")?Ma_BC=' + Ma_BC;
+            var link = document.createElement('a');
+            link.href = downloadUrl;
+            link.target = '_blank';
+            link.addEventListener('click', function() {
+                Swal.close();
+                Swal.fire({
+                    title: 'Đang tải...',
+                    text: 'Vui lòng chờ...',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false
+                });
+                setTimeout(function() {
+                    checkDownloadStatus(downloadUrl);
+                }, 5000);
+            });
+            link.click();
+        }
+
+        // Function to check download status
+        function checkDownloadStatus(downloadUrl) {
+            // Send a HEAD request to the download URL
+            var xhr = new XMLHttpRequest();
+            xhr.open('HEAD', downloadUrl, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.status === 200) {
+                    Swal.fire({
+                        title: 'Tải xuống thành công',
+                        text: 'Tệp đã tải xuống thành công!',
+                        icon: 'success',
+                        timer: 2000
+                    }).then(function () {
+                        window.location.href = "Index_checklist";
+                    });
+                } else {
+                    // Parse the response JSON for the error message
+                    var response = JSON.parse(xhr.responseText);
+                    var errorMessage = response.message;
+
+                    Swal.fire({
+                        title: 'Tải xuống thất bại',
+                        text: errorMessage, // Display the specific error message
+                        icon: 'error',
+                        timer: 3000
+                    }).then(function () {
+                        window.location.href = "Index_checklist";
+                    });
+                }
+            };
+            xhr.send();
+        }
+    </script>
+    <!----Xóa-->
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btnDelete', function () {
+                var Ma_BC = $(this).data("id");
+                var Status = 0;
+                console.log('Trạng thái báo cáo: ', Status);
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa bản ghi này không ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, xóa nó',
+                    cancelButtonText: 'Không, hủy bỏ',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Delete_checklist',
+                            type: 'POST',
+                            data: { Ma_BC: Ma_BC, Status: Status },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thành công', rs.message, 'success');///sửa ở đây 16/10/23 by dan.dc
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            errorCount: function (xhr, status, errorCount) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + errorCount, 'errorCount');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+    </script>
+    <!-- Modal đỏ bảng thêm mới  -->
+    <script>
+        $(document).ready(function () {
+            // Xác định button mở form và thêm sự kiện click vào
+            $('#openModalButton').click(function () {
+                loadScript("/Assets/js/checklist.js");
+                function loadScript(url) {
+                    var script = document.createElement('script');
+                    script.src = url;
+                    document.head.appendChild(script);
+                }
+                $('#myModalAdd').modal('show');
+            });
+            $('.close').on('click', function (e) {
+                $('#myModalAdd').modal('hide');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.close').on('click', function (e) {
+                $('#pdfModal').modal('hide');
+            });
+        });
+    </script>
+    <!-- Chặn chụp hình -->
+    <script>
+        const inputElement = document.getElementById('HinhAnh');
+        inputElement.addEventListener('change', function () {
+            const file = inputElement.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const creationTime = file.lastModified;
+
+                // Kiểm tra thời gian tạo của tấm hình (đơn vị: mili giây)
+                // Ví dụ: kiểm tra nếu tấm hình được chụp trong vòng 5 giây gần đây
+                const currentTime = new Date().getTime();
+                const timeDiff = currentTime - creationTime;
+                let libraryNotificationShown = sessionStorage.getItem("libraryNotificationShown");
+                if (timeDiff < 5000) {
+                    // Thời gian tạo tấm hình gần đây, có thể là từ camera
+                    Swal.fire({
+                        title: 'Vui lòng không truy cập camera.',
+                        text: 'Tính năng sử dụng camera đang được dev phát triển.',
+                        icon: 'info' // Icon thành công
+                    });
+                    document.getElementById("HinhAnh").value = "";
+                    // Load lại trang sau 4 giây
+                    setTimeout(function () {
+                        location.reload();
+                    }, 4000);
+                } else {
+                    console.log('Bạn đã chọn ảnh từ thư viện.')
+                    // Thời gian tạo tấm hình lâu hơn, có thể là từ thư viện
+                }
+            }
+        });
+    </script>
+    <!-- JavaScript to handle the modal and load PDF -->
+    <script>
+        function openPdfModal(maBC) {
+            // Call the action method to get the PDF URL
+            $.ajax({
+                url: '/Home/View_checklist',
+                type: 'POST',
+                data: { Ma_BC: maBC },
+                success: function (data) {
+                    var base64Pdf = data.pdfData;
+                    var maBCValue = data.Ma_BC;
+                    //console.log('url', base64Pdf);
+                    $('#maBCPlaceholder').text(maBCValue);
+                    // Update the src of the embed element with the base64 PDF data
+                    $('#pdfEmbed').attr('src', "data:application/pdf;base64," + base64Pdf);
+
+                    // Show the modal
+                    $('#pdfModal').modal('show');
+                },
+                error: function () {
+                    alert('Failed to retrieve PDF.');
+                }
+            });
+        }
+    </script>
+}
+

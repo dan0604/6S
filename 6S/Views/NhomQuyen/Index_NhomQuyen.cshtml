@@ -1,0 +1,500 @@
+﻿@model IEnumerable<_6S.Context.Tbl_NhomQuyen>
+@{
+    ViewBag.Title = "Danh sách nhóm quyền";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Danh sách  nhóm quyền</h1>
+                        <br />
+                        <div class="col-12">
+                            <button type="button" class="btn btn-outline-primary" id="openModalButton"><i class="fas fa-plus"></i>Tạo NhomQuyen mới</button>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped" style="text-align:center">
+                                <thead>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>ID_NhomQuyen</th>
+                                        <th>IDMenu</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        var i = 1;
+                                        foreach (var item in Model)
+                                        {
+                                            <tr id="trow_@item.ID">
+                                                <td>@i</td>
+                                                <td>@item.ID_NhomQuyen</td>
+                                                <td>@item.IDMenu</td>
+                                                <td>@item.Status</td>
+                                                <td class="dropdown btn-group">
+                                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <li>
+                                                            <a href="javascript:void(0);" data-ID_NhomQuyen="@item.ID_NhomQuyen" data-IDMenu="@item.IDMenu" class="btn btn-outline-danger btnDelete"><i class="fas fa-trash" title="Xóa ID_NhomQuyen @item.ID_NhomQuyen"></i></a>
+
+                                                            <a href="javascript:void(0);" data-id="@item.ID_NhomQuyen" data-IDMenu="@item.IDMenu" class="btn btn-outline-warning btnEdit"><i class="fas fa-edit" title="Sửa ID_NhomQuyen @item.ID_NhomQuyen"></i></a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td style="text-align:center" colspan="6">Không có bản ghi nào</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>ID_NhomQuyen</th>
+                                        <th>IDMenu</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+        <!-- Thêm cửa sổ modal thêm -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalAdd" aria-labelledby="myModalTitle" aria-hidden="true">
+            <div class="modal-dialog my-custom-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Bảng dữ liệu thêm mới thông tin nhóm quyền</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("Add_NhomQuyen", "NhomQuyen", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.ValidationSummary(true)
+                            @Html.AntiForgeryToken()
+                            <section class="content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card card-primary">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Thông tin chính</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="inputName">Mã nhóm quyền</label>
+                                                    <input type="text" id="ID_NhomQuyen" required="" name="ID_NhomQuyen" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputName">Mã Menu</label>
+                                                    <input type="text" id="IDMenu" required="" name="IDMenu" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card card-secondary">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Trạng thái</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="inputStatus">Chọn trạng thái</label>
+                                                    <select name="Status" class="form-control select2bs4" runat="server">
+                                                        <option value="0">Không sử dụng</option>
+                                                        <option value="1">Đang sử dụng</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a href="/NhomQuyen/Index_NhomQuyen" class="btn btn-outline-secondary"><i class='fas fa-ban'></i>Hủy</a>
+                                        <button type="submit" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                                    </div>
+                                </div>
+                            </section> <!-- /.content -->
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!---sửa-->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+                            <div class="form-group">
+                                <label for="editQuyen">Mã menu</label>
+                                <input type="text" id="editIDMenu" class="form-control" required="" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="editStatus">Status</label>
+                                <select id="editStatus" class="form-control select2bs4">
+                                    <option value="1">Không sử dụng</option>
+                                    <option value="2">Đang sử dụng</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="btnSave" class="btn btn-primary">Save changes</button>*@
+                        <button type="button" id="btnCancel" class="btn btn-outline-secondary" data-dismiss="modal"><i class='fas fa-ban'></i>Hủy</button>
+                        <button type="button" id="btnSave" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .link {
+                display: none;
+            }
+        </style>
+    </div>
+</section>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            // Xác định button mở form và thêm sự kiện click vào
+            $('#openModalButton').click(function () {
+                // Mở cửa sổ Modal
+                $('#myModalAdd').modal('show');
+            });
+            $('.close').on('click', function (e) {
+                $('#myModalAdd').modal('hide');
+            });
+        });
+    </script>
+    <!---xóa-->
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btnDelete', function () {
+                var ID_NhomQuyen = $(this).attr("data-ID_NhomQuyen");
+                var IDMenu = $(this).attr("data-IDMenu");
+                var Status = 0;
+                console.log(ID_NhomQuyen); console.log(IDMenu); console.log(Status);
+                Swal.fire({
+                    title: 'Bạn chắc chắn muốn xóa NhomQuyen này ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, xóa nó',
+                    cancelButtonText: 'Không, hủy bỏ',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Delete_NhomQuyen',
+                            type: 'POST',
+                            data: { ID_NhomQuyen: ID_NhomQuyen, IDMenu: IDMenu, Status: Status },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///kích hoạt
+        $(document).ready(function () {
+            $('body').on('click', '.btnActive', function () {
+                var ID_NhomQuyen = $(this).data("ID_NhomQuyen");
+                Swal.fire({
+                    title: 'Bạn có muốn kích hoạt NhomQuyen này không ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, gửi nó',
+                    cancelButtonText: 'Hủy',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Active_NhomQuyen',
+                            type: 'POST',
+                            data: { ID_NhomQuyen: ID_NhomQuyen },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///duyệt
+        $(document).ready(function () {
+            $('body').on('click', '.btnApprove', function () {
+                var ID_NhomQuyen = $(this).data("ID_NhomQuyen");
+                Swal.fire({
+                    title: 'Bạn có muốn duyệt quyền cho NhomQuyen này không ?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, duyệt nó',
+                    cancelButtonText: 'Không',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Approve_NhomQuyen',
+                            type: 'POST',
+                            data: { ID_NhomQuyen: ID_NhomQuyen },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+    </script>
+    <!---sửa-->
+    <script>
+        $(document).ready(function () {
+            var ID_NhomQuyen = null;
+            var IDMenu = null;
+            $('.btnEdit').click(function () {
+                ID_NhomQuyen = $(this).data('id');
+                var element = document.querySelector('.btnEdit');
+                IDMenu = element.getAttribute('data-IDMenu');
+                // Gửi yêu cầu AJAX để lấy dữ liệu NhomQuyen từ server
+                $.ajax({
+                    url: 'Edit_NhomQuyen', // Đảm bảo rằng URL này đúng
+                    type: 'GET',
+                    data: { ID_NhomQuyen: ID_NhomQuyen, IDMenu: IDMenu },
+                    success: function (response) {
+                        // Hiển thị dữ liệu NhomQuyen lên modal form
+                        $('#editIDMenu').val(response.IDMenu);
+                        $('#editStatus').val(response.Status);
+                        var selectedStatus = response.Status;
+                        // Determine the new value and text based on selectedStatus
+                        var newValue, newText;
+                        if (selectedStatus === 0) {
+                            newValue = '0';
+                            newText = 'Không sử dụng';
+                        } else {
+                            newValue = '1';
+                            newText = 'Đang sử dụng';
+                        }
+
+                        // Add or update the option
+                        var statusDropdown = $('#editStatus');
+                        statusDropdown.find('option[value="' + newValue + '"]').remove(); // Remove existing option if it exists
+                        statusDropdown.append($('<option>', {
+                            value: newValue,
+                            text: newText
+                        }));
+
+                        // Set the selected option
+                        statusDropdown.val(newValue);
+
+
+                        // Add an option for "Đang sử dụng" with a value of 1
+                        $('#editStatus').append($('<option>', {
+                            value: '1',
+                            text: 'Đang sử dụng'
+                        }));
+                        $('.modal-title').html('Sửa thông tin nhóm quyền: ' + response.ID_NhomQuyen);
+                        $('#editModal').modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire('Lỗi khi lấy dữ liệu NhomQuyen: ' + error);
+                    }
+                });
+            });
+
+            $('#btnSave').click(function () {
+                console.log('Nút Save đã được nhấn.');
+
+                // Lấy thông tin từ form
+                var editedNhomQuyen = {
+                    ID_NhomQuyen: ID_NhomQuyen,
+                    IDMenu: $('#editIDMenu').val(),
+                    Status: $('#editStatus').val(),
+                };
+
+                console.log('Dữ liệu sẽ được gửi:');
+                console.log(editedNhomQuyen);
+
+                // Gửi yêu cầu POST để cập nhật NhomQuyen
+                $.ajax({
+                    url: 'Edit_NhomQuyen', // Đảm bảo rằng URL này đúng
+                    type: 'POST',
+                    data: editedNhomQuyen,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Thành công', response.message, 'success');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            Swal.fire('Thất bại', response.message, 'error');
+                        }
+
+                        // Close the modal form
+                        $('#editModal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire('Lỗi', 'Lỗi khi cập nhật thông tin NhomQuyen: ' + error, 'error');
+                    }
+                });
+            });
+        });
+        $('#btnCancel').click(function () {
+            // Xử lý khi nút Hủy được nhấn
+            $('#editModal').modal('hide');
+        });
+        $('.close').on('click', function (e) {
+            $('#editModal').modal('hide');
+        });
+    </script>
+    <!--Hiển thị thông báo từ return Viewbag của controller-->
+    @{
+        // Lấy giá trị từ ViewBag và truyền vào mã nguồn JavaScript
+        string message = ViewBag.message != null ? ViewBag.message.ToString() : "";
+        string error = ViewBag.error != null ? ViewBag.error.ToString() : "";
+    }
+    <script>
+            $(document).ready(function() {
+                if('@message' !== "") {
+                    swal('@Html.Raw(message)');
+
+                    swal({
+                        title: '@Html.Raw(message)',
+                        text: 'Thành công!',
+                        icon: 'success',
+                         timer: 2000
+                    }).then(function () {
+                        window.location.href = "Index_NhomQuyen";
+                    });
+                }
+                if('@error' !== "") {
+                    swal({
+                        title: '@Html.Raw(error)',
+                        icon: 'error',
+                      buttons: {
+                        ok: "OK"
+                      }
+                    })
+                    .then((value) => {
+                        if (value) {
+                            // Delay the redirection by a few seconds
+                            setTimeout(function () {
+                                window.location.href = "Index_NhomQuyen";
+                            }, 2000); // Wait for 2 seconds before redirecting
+                        }
+                    });
+                }
+            });
+    </script>
+}
+

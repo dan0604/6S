@@ -1,0 +1,575 @@
+﻿@model IEnumerable<_6S.Context.Tbl_PhongBan>
+@{
+    ViewBag.Title = "Danh sách phòng ban";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Danh sách phòng ban</h1>
+                        <br />
+                        <div class="col-12">
+                            <button type="button" class="btn btn-outline-primary" id="openModalButton"><i class="fas fa-plus"></i>Tạo PhongBan mới</button>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped" style="text-align:center">
+                                <thead>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>ID_PhongBan</th>
+                                        <th>TenPhongBan</th>
+                                        <th>TuNgay</th>
+                                        <th>DenNgay</th>
+                                        <th>Status</th>
+                                        <th>Ma_Khoi</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        var i = 1;
+                                        foreach (var item in Model)
+                                        {
+                                            <tr id="trow_@item.ID">
+                                                <td>@i</td>
+                                                <td>@item.ID_PhongBan</td>
+                                                <td>@item.TenPhongBan</td>
+                                                <td>@item.TuNgay</td>
+                                                <td>@item.DenNgay</td>
+                                                <td>@item.Status</td>
+                                                <td>@item.Ma_Khoi</td>
+                                                <td class="dropdown btn-group">
+                                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <li>
+                                                            <a href="javascript:void(0);" data-id="@item.ID_PhongBan" class="btn btn-outline-danger btnDelete"><i class="fas fa-trash" title="Xóa username @item.TenPhongBan"></i></a>
+                                                            <a href="javascript:void(0);" data-id="@item.ID_PhongBan" class="btn btn-outline-warning btnEdit"><i class="fas fa-edit" title="Sửa username @item.TenPhongBan"></i></a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td style="text-align:center" colspan="8">Không có bản ghi nào</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>ID_PhongBan</th>
+                                        <th>TenPhongBan</th>
+                                        <th>TuNgay</th>
+                                        <th>DenNgay</th>
+                                        <th>Status</th>
+                                        <th>Ma_Khoi</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+        <!-- Thêm cửa sổ modal thêm -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalAdd" aria-labelledby="myModalTitle" aria-hidden="true">
+            <div class="modal-dialog my-custom-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Bảng dữ liệu thêm mới thông tin phòng ban</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("Add_PhongBan", "PhongBan", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.ValidationSummary(true)
+                            @Html.AntiForgeryToken()
+                            <section class="content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card card-primary">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Thông tin chính</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="inputName">Mã phòng ban</label>
+                                                    <input type="text" id="ID_PhongBan" required="" name="ID_PhongBan" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputName">Tên phòng ban</label>
+                                                    <input type="text" id="TenPhongBan" required="" name="TenPhongBan" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card card-secondary">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Thời gian hiệu lực và trạng thái</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="inputName">Từ ngày</label>
+                                                    <input class="form-control" type="datetime-local" id="datetimepicker" name="TuNgay" placeholder="DD/MM/YYYY - HH:mm" title="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))" size="20" autocomplete="off" value="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputName">Đến ngày</label>
+                                                    <input class="form-control" type="datetime-local" id="datetimepicker" name="DenNgay" placeholder="DD/MM/YYYY - HH:mm" title="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))" size="20" autocomplete="off" value="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputStatus">Chọn trạng thái</label>
+                                                    <select name="Status" class="form-control select2bs4" runat="server">
+                                                        <option value="0">Không sử dụng</option>
+                                                        <option value="1">Đang sử dụng</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a href="/PhongBan/Index_PhongBan" class="btn btn-outline-secondary"><i class='fas fa-ban'></i>Hủy</a>
+                                        <button type="submit" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                                    </div>
+                                </div>
+                            </section> <!-- /.content -->
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!---sửa-->
+        <!-- Modal form -->
+        <!-- Modal -->
+        @{
+            string ID_PhongBan = null;
+            string TenPhongBan = null;
+            string Ma_Khoi = null;
+            int? Status = null;
+
+            foreach (var phongban in Model)
+            {
+                if (phongban.ID_PhongBan != null)
+                {
+                    ID_PhongBan = phongban.ID_PhongBan;
+                    TenPhongBan = phongban.TenPhongBan;
+                    Ma_Khoi = phongban.Ma_Khoi;
+                    Status = phongban.Status ?? 0;
+                    break;
+                }
+            }
+        }
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+                            <div class="form-group">
+                                <label for="editTenPhongBan">TenPhongBan</label>
+                                <input type="text" id="editTenPhongBan" class="form-control" required="">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputStatus">Từ ngày</label>
+                                @{
+                                    string formattedDate_TuNgay = Model.FirstOrDefault().TuNgay?.ToString("yyyy-MM-ddTHH:mm");
+                                }
+                                <input class="form-control" type="datetime-local" id="editTuNgay" name="TuNgay" placeholder="DD/MM/YYYY - HH:mm" title="@formattedDate_TuNgay" size="20" autocomplete="off" value="@formattedDate_TuNgay">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputStatus">Đến ngày</label>
+                                @{
+                                    string formattedDate_DenNgay = Model.FirstOrDefault().DenNgay?.ToString("yyyy-MM-ddTHH:mm");
+                                }
+                                <input class="form-control" type="datetime-local" id="editDenNgay" name="DenNgay" placeholder="DD/MM/YYYY - HH:mm" title="@formattedDate_DenNgay" size="20" autocomplete="off" value="@formattedDate_DenNgay">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputStatus">Khối</label>
+                                @{
+                                    _6S.Context.Model_6S db_edit = new _6S.Context.Model_6S();
+                                    var Khoi_edit = db_edit.Tbl_Khoi.ToList();
+                                }
+                                <select name="Ma_Khoi" id="editMa_Khoi" class="form-control select2bs4" required="">
+                                    @foreach (var item in Khoi_edit)
+                                    {
+                                        <option value="@item.Ma_Khoi" @Html.Raw(item.Ma_Khoi == @Ma_Khoi ? "selected" : "")>
+                                            @item.TenKhoi
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editStatus">Status</label>
+                                <select id="editStatus" class="form-control select2bs4">
+                                    <option value="0">Không sử dụng</option>
+                                    <option value="1">Đang sử dụng</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="btnSave" class="btn btn-primary">Save changes</button>*@
+                        <button type="button" id="btnCancel" class="btn btn-outline-secondary" data-dismiss="modal"><i class='fas fa-ban'></i>Hủy</button>
+                        <button type="button" id="btnSave" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .link {
+                display: none;
+            }
+        </style>
+    </div>
+</section>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            // Xác định button mở form và thêm sự kiện click vào
+            $('#openModalButton').click(function () {
+                // Mở cửa sổ Modal
+                $('#myModalAdd').modal('show');
+            });
+            $('.close').on('click', function (e) {
+                $('#myModalAdd').modal('hide');
+            });
+        });
+    </script>
+    <!---Xóa-->
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btnDelete', function () {
+                var ID_PhongBan = $(this).data("id");
+                console.log(ID_PhongBan);
+                var Status = 0;
+                Swal.fire({
+                    title: 'Bạn chắc chắn muốn xóa PhongBan này ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, xóa nó',
+                    cancelButtonText: 'Không, hủy bỏ',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Delete_PhongBan',
+                            type: 'POST',
+                            data: { ID_PhongBan: ID_PhongBan, Status: Status },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///kích hoạt
+        $(document).ready(function () {
+            $('body').on('click', '.btnActive', function () {
+                var ID_PhongBan = $(this).data("ID_PhongBan");
+                Swal.fire({
+                    title: 'Bạn có muốn kích hoạt PhongBan này không ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, gửi nó',
+                    cancelButtonText: 'Hủy',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Active_PhongBan',
+                            type: 'POST',
+                            data: { ID_PhongBan: ID_PhongBan },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///duyệt
+        $(document).ready(function () {
+            $('body').on('click', '.btnApprove', function () {
+                var ID_PhongBan = $(this).data("ID_PhongBan");
+                Swal.fire({
+                    title: 'Bạn có muốn duyệt quyền cho PhongBan này không ?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, duyệt nó',
+                    cancelButtonText: 'Không',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Approve_PhongBan',
+                            type: 'POST',
+                            data: { ID_PhongBan: ID_PhongBan },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+    </script>
+    <!---sửa-->
+    <script>
+        $(document).ready(function () {
+            var ID_PhongBan = null;
+            $('.btnEdit').click(function () {
+                ID_PhongBan = $(this).data('id');
+                console.log('Nút Edit đã được nhấn.');
+                console.log('ID_PhongBan: ' + ID_PhongBan);
+                // Gửi yêu cầu AJAX để lấy dữ liệu PhongBan từ server
+                $.ajax({
+                    url: 'Edit_PhongBan', // Đảm bảo rằng URL này đúng
+                    type: 'GET',
+                    data: { ID_PhongBan: ID_PhongBan },
+                    success: function (response) {
+                        // Hiển thị dữ liệu PhongBan lên modal form
+                        $('#editTenPhongBan').val(response.TenPhongBan);
+                        //$('#editTuNgay').val(response.TuNgay);
+                        //$('#editDenNgay').val(response.DenNgay);
+                        $('#editStatus').val(response.Status);
+                        var selectedStatus = response.Status;
+                        console.log('Status: ', selectedStatus);
+
+                        // Determine the new value and text based on selectedStatus
+                        var newValue, newText;
+                        if (selectedStatus === 0) {
+                            newValue = '0';
+                            newText = 'Không sử dụng';
+                        } else {
+                            newValue = '1';
+                            newText = 'Đang sử dụng';
+                        }
+
+                        // Add or update the option
+                        var statusDropdown = $('#editStatus');
+                        statusDropdown.find('option[value="' + newValue + '"]').remove(); // Remove existing option if it exists
+                        statusDropdown.append($('<option>', {
+                            value: newValue,
+                            text: newText
+                        }));
+
+                        // Set the selected option
+                        statusDropdown.val(newValue);
+
+
+                        // Add an option for "Đang sử dụng" with a value of 1
+                        $('#editStatus').append($('<option>', {
+                            value: '1',
+                            text: 'Đang sử dụng'
+                        }));
+
+                        $('#editMa_Khoi').val(response.Ma_Khoi).change();
+                        var fullname = $('#editTenPhongBan').val();
+                        $('.modal-title').html('Sửa thông tin Phòng ban: ' + fullname);
+                        // Mở modal form
+                        $('#editModal').modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire('Lỗi khi lấy dữ liệu PhongBan: ' + error);
+                    }
+                });
+            });
+
+            $('#btnSave').click(function () {
+                console.log('Nút Save đã được nhấn.');
+
+                // Lấy thông tin từ form
+                var editedPhongBan = {
+                    ID_PhongBan: ID_PhongBan,
+                    TenPhongBan: $('#editTenPhongBan').val(),
+                    TuNgay: $('#editTuNgay').val(),
+                    DenNgay: $('#editDenNgay').val(),
+                    Status: $('#editStatus').val(),
+                    Ma_Khoi: $('#editMa_Khoi').val()
+                };
+
+                console.log('Dữ liệu sẽ được gửi:');
+                console.log(editedPhongBan);
+
+                // Gửi yêu cầu POST để cập nhật PhongBan
+                $.ajax({
+                    url: 'Edit_PhongBan', // Đảm bảo rằng URL này đúng
+                    type: 'POST',
+                    data: editedPhongBan,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Thành công', response.message, 'success');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            Swal.fire('Thất bại', response.message, 'error');
+                        }
+
+                        // Close the modal form
+                        $('#editModal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire('Lỗi', 'Lỗi khi cập nhật thông tin PhongBan: ' + error, 'error');
+                    }
+                });
+            });
+        });
+        $('#btnCancel').click(function () {
+            // Xử lý khi nút Hủy được nhấn
+            $('#editModal').modal('hide');
+        });
+        $('.close').on('click', function (e) {
+            $('#editModal').modal('hide');
+        });
+    </script>
+
+    <!--Hiển thị thông báo từ return Viewbag của controller-->
+    @{
+        // Lấy giá trị từ ViewBag và truyền vào mã nguồn JavaScript
+        string message = ViewBag.message != null ? ViewBag.message.ToString() : "";
+        string error = ViewBag.error != null ? ViewBag.error.ToString() : "";
+    }
+    <script>
+            $(document).ready(function() {
+                if('@message' !== "") {
+                    swal('@Html.Raw(message)');
+
+                    swal({
+                        title: '@Html.Raw(message)',
+                        text: 'Thành công!',
+                        icon: 'success',
+                         timer: 2000
+                    }).then(function () {
+                        window.location.href = "Index_PhongBan";
+                    });
+                }
+                if('@error' !== "") {
+                    swal({
+                        title: '@Html.Raw(error)',
+                        icon: 'error',
+                      buttons: {
+                        ok: "OK"
+                      }
+                    })
+                    .then((value) => {
+                        if (value) {
+                            // Delay the redirection by a few seconds
+                            setTimeout(function () {
+                                window.location.href = "Index_PhongBan";
+                            }, 2000); // Wait for 2 seconds before redirecting
+                        }
+                    });
+                }
+            });
+    </script>
+}
+

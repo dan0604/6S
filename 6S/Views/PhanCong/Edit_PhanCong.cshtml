@@ -1,0 +1,199 @@
+﻿@model IEnumerable<_6S.Context.Tbl_PhanCong_H>
+@{
+    ViewBag.Title = "Sửa lịch làm việc";
+}
+<div class="modal fade" tabindex="-1" role="dialog" id="editModal" aria-labelledby="myModalTitle" aria-hidden="true">
+    <div class="modal-dialog my-custom-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selectedThangNam_Edit">LỊCH PHÂN CÔNG CHẤM 6S</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">1. Thời gian đánh giá</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form id="checklistForm_Edit" method="post" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="forLoai_BC_Edit">Loại báo cáo</label>
+                                                <select id="idLoai_BC_Edit" name="Loai_BC_Edit" class="form-control select2bs4">
+                                                    <option value="HC">Chấm hiệu chỉnh</option>
+                                                    <option value="CH">Chấm chéo</option>
+                                                    <option value="NB">Chấm nội bộ</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="inputName">Giờ</label>
+                                                <input class="form-control" type="time" required="" id="idGio_BC" name="Gio_BC" placeholder="HH:mm" title="@(DateTime.Now.ToString("HH:mm"))" size="20" autocomplete="off" value="@(DateTime.Now.ToString("HH:mm"))">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="inputName">Tháng đánh giá</label>
+                                                <input class="form-control" type="month" required="" id="idThangNam_BC_Edit" name="ThangNam_BC_Edit" onchange="updateDateRange_Edit()" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Ngày</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control float-right" id="reservation_PhanCong_Edit">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="previewTable_thoigian_Edit" class="table table-bordered table-striped" style="text-align:center">
+                                            <thead>
+                                                <tr>
+                                                    <th class="hidden-value">Mã Phân Công</th>
+                                                    <th>6S</th>
+                                                    <th>Chấm nội bộ</th>
+                                                    <th>Chấm chéo</th>
+                                                    <th>Chấm hiệu chỉnh</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </form>
+                                <button id="btnLuuTam_ThoiGian_Edit" type="button" class="btn btn-outline-dark mt-4" onclick="btnLuuTamThoiGian_Edit()">
+                                    <i class="fas fa-plus"></i>Lưu thời gian
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Table -->
+                <div class="row">
+                    <div class="col-md-12" id="nhanSuDanhGiaChamCheoSection_Edit" >
+                        <div class="card">
+
+                            <div class="card-header">
+                                <h3 class="card-title">2. Nhân sự đánh giá chấm chéo</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="forMa_Khoi_Edit">Khối</label>
+                                            <select id="Ma_Khoi_Edit" name="Ma_Khoi_Edit" class="form-control select2bs4">
+                                                @{
+                                                    _6S.Context.Model_6S db = new _6S.Context.Model_6S();
+                                                    var Ma_Khoi = db.Tbl_Khoi.ToList();
+                                                    foreach (var item in Ma_Khoi)
+                                                    {
+                                                        <option value="@item.Ma_Khoi">@item.TenKhoi</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="forPhongBan_Edit">Phòng ban</label>
+                                            <select id="PhongBan_Edit" name="PhongBan_Edit" class="form-control select2bs4">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="forUsername_Edit">Thành viên Ban ĐH</label>
+                                            <select id="Username_Edit" name="Username_Edit" class="form-control select2bs4">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="forNVCaiTien">Tổ Cải Tiến</label>
+                                            <select id="NVCaiTien" name="NVCaiTien" class="form-control select2bs4">
+                                                @{
+                                                    var Tocaitien = db.Tbl_NhanVienCaiTien.ToList();
+                                                    foreach (var item in Tocaitien)
+                                                    {
+                                                        <option value="@item.TenNV">@item.TenNV</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="previewTable_sanxuat_Edit" class="table table-bordered table-striped" style="text-align:center">
+                                        <thead>
+                                            <tr>
+                                                <th class="hidden-value">Mã Phân Công</th>
+                                                <th>KHỐI SẢN XUẤT</th>
+                                                <th>Thành Viên Ban ĐH</th>
+                                                <th>Tổ Cải Tiến</th>
+                                                <th>Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Dữ liệu xem trước sẽ được hiển thị tại đây -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="previewTable_vanphong_Edit" class="table table-bordered table-striped" style="text-align:center">
+                                        <thead>
+                                            <tr>
+                                                <th class="hidden-value">Mã Phân Công</th>
+                                                <th>KHỐI VĂN PHÒNG</th>
+                                                <th>Thành Viên Ban ĐH</th>
+                                                <th>Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Dữ liệu xem trước sẽ được hiển thị tại đây -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="btnLuuTam_Edit" type="button" class="btn btn-outline-dark mt-4">
+                            <i class="fas fa-plus"></i>Lưu tạm
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button id="btnGuiDuLieu_Edit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                    </div>
+                    <div id="loading" style="display:none; text-align:center">Đang nạp...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

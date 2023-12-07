@@ -1,0 +1,143 @@
+﻿@model IEnumerable<_6S.Context.Tbl_Join_ALL>
+@{
+    ViewBag.Title = "Danh sách mục tiêu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Danh sách mục tiêu</h1>
+                        <br />
+                        <div class="col-12">
+                            @if (ViewData["ButtonsOpenCR"] as bool? == true && ViewData["ButtonsOpenCR"] != null)
+                            {
+                                <button type="button" class="btn btn-outline-primary" id="openModalButton"><i class="fas fa-plus"></i>Tạo Mục tiêu mới</button>
+                            }
+                            else { }
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped" style="text-align:center">
+                                <thead>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Phòng ban</th>
+                                        <th>Tháng năm</th>
+                                        <th>Điểm mục tiêu</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        var i = 1;
+                                        foreach (var item in Model)
+                                        {
+                                            <tr id="trow_@item.MucTieu.ID">
+                                                <td>@i</td>
+                                                <td>@item.PhongBan.TenPhongBan</td>
+                                                <td>@item.MucTieu.ThangNam</td>
+                                                <td>@item.MucTieu.MucTieu</td>
+                                                <td>
+                                                    @if (item.MucTieu.Status == 0)
+                                                    {
+                                                        <div class="badge bg-danger">Đã xóa</div>
+                                                    }
+                                                    else if (item.MucTieu.Status == 1)
+                                                    {
+                                                        <div class="badge bg-warning">Có hiệu lực</div>
+                                                    }
+                                                </td>
+                                                <td class="dropdown btn-group">
+                                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <li>
+                                                            @if (ViewData["ButtonsOpenDelete"] as bool? == true && ViewData["ButtonsOpenDelete"] != null)
+                                                            {
+                                                                <a href="javascript:void(0);" data-id="@item.MucTieu.ID" class="btn btn-outline-danger btnDelete status-@item.MucTieu.Status"><i class="fas fa-trash" title="Xóa mục tiêu @item.MucTieu.ID"></i></a>
+                                                            }
+                                                            else { }
+                                                            @if (ViewData["ButtonsOpenUpdate"] as bool? == true && ViewData["ButtonsOpenUpdate"] != null)
+                                                            {
+                                                                <a href="javascript:void(0);" data-id="@item.MucTieu.ID" class="btn btn-outline-warning btnEdit status-@item.MucTieu.Status"><i class="fas fa-edit" title="Sửa mục tiêu @item.MucTieu.ID"></i></a>
+                                                            }
+                                                            else { }
+                                                            @*@if (ViewData["ButtonsOpenDPC"] as bool? == true && ViewData["ButtonsOpenDPC"] != null)
+                    {
+                        <a href="javascript:void(0);" data-id="@item.MucTieu.ID" class="btn btn-outline-success btnApprove status-@item.MucTieu.Status">
+                            <i class="fas fa-check" title="Duyệt mục tiêu @item.MucTieu.ID"></i>
+                        </a>
+                    }
+                    else { }*@
+                                                        </li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td style="text-align:center" colspan="5">Không có bản ghi nào</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Phòng ban</th>
+                                        <th>Tháng năm</th>
+                                        <th>Điểm mục tiêu</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- Thêm cửa sổ modal thêm -->
+    @{ Html.RenderPartial("Add_MucTieu"); }
+</section>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#openModalButton').click(function () {
+                $('#loading').show();
+                loadScript("/Assets/js/muctieu.js");
+                function loadScript(url) {
+                    var script = document.createElement('script');
+                    script.src = url;
+                    document.head.appendChild(script);
+                }
+                $('#myModalAdd').modal('show');
+            });
+            $('#myModalAdd').on('shown.bs.modal', function () {
+                $('#loading').hide();
+            });
+
+            $('.close').on('click', function (e) {
+                $('#myModalAdd').modal('hide');
+            });
+        });
+    </script>
+
+}

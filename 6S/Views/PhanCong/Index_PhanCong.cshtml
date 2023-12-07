@@ -1,0 +1,655 @@
+﻿@model IEnumerable<_6S.Context.Tbl_PhanCong_H>
+@{
+    ViewBag.Title = "Danh sách công việc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Danh sách lịch làm việc</h1>
+                        <br />
+                        <div class="col-12">
+                            @if (ViewData["ButtonsOpenCR"] as bool? == true && ViewData["ButtonsOpenCR"] != null)
+                            {
+                                <button type="button" class="btn btn-outline-primary" id="openModalButton"><i class="fas fa-plus"></i>Tạo Lịch làm mới</button>
+                            }
+                            else { }
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped" style="text-align:center">
+                                <thead>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Mã phân công</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Người tạo</th>
+                                        <th>Ngày ký</th>
+                                        <th>Người ký</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        var i = 1;
+                                        foreach (var item in Model)
+                                        {
+                                            <tr id="trow_@item.ID">
+                                                <td>@i</td>
+                                                <td>@(string.IsNullOrEmpty(item.ID_PhanCong) ? "N/A" : item.ID_PhanCong)</td>
+                                                <td>@(item.Ngay_Tao?.ToString("dd-MM-yyyy") ?? "N/A")</td>
+                                                <td>@(string.IsNullOrEmpty(item.Nguoi_Tao) ? "N/A" : item.Nguoi_Tao)</td>
+                                                <td>@(item.Ngay_Ky?.ToString("dd-MM-yyyy") ?? "N/A")</td>
+                                                <td>@(string.IsNullOrEmpty(item.Nguoi_Ky) ? "N/A" : item.Nguoi_Ky)</td>
+                                                <td>
+                                                    @if (item.Status == 0)
+                                                    {
+                                                        <div class="badge bg-danger">Đã xóa</div>
+                                                    }
+                                                    else if (item.Status == 1)
+                                                    {
+                                                        <div class="badge bg-warning">Chờ duyệt</div>
+                                                    }
+                                                    else if (item.Status == 2)
+                                                    {
+                                                        <div class="badge bg-success">Có hiệu lực</div>
+                                                    }
+                                                </td>
+                                                <td class="dropdown btn-group">
+                                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <li>
+                                                            @if (ViewData["ButtonsOpenDelete"] as bool? == true && ViewData["ButtonsOpenDelete"] != null)
+                                                            {
+                                                                <a href="javascript:void(0);" data-id="@item.ID_PhanCong" class="btn btn-outline-danger btnDelete status-@item.Status"><i class="fas fa-trash" title="Xóa phân công @item.ID_PhanCong"></i></a>
+                                                            }
+                                                            else { }
+                                                            @if (ViewData["ButtonsOpenUpdate"] as bool? == true && ViewData["ButtonsOpenUpdate"] != null)
+                                                            {
+                                                                <a href="javascript:void(0);" data-id="@item.ID_PhanCong" class="btn btn-outline-warning btnEdit status-@item.Status"><i class="fas fa-edit" title="Sửa phân công @item.ID_PhanCong"></i></a>
+                                                            }
+                                                            else { }
+                                                            @if (ViewData["ButtonsOpenDPC"] as bool? == true && ViewData["ButtonsOpenDPC"] != null)
+                                                            {
+                                                                <a href="javascript:void(0);" data-id="@item.ID_PhanCong" class="btn btn-outline-success btnApprove status-@item.Status">
+                                                                    <i class="fas fa-check" title="Duyệt phân công @item.ID_PhanCong"></i>
+                                                                </a>
+                                                            }
+                                                            else { }
+                                                            @if (ViewData["ButtonsOpenDownload"] as bool? == true && ViewData["ButtonsOpenDPC"] != null)
+                                                            {
+                                                                <button type="button" class="btn btn-outline-dark" title="Tải files báo cáo @item.ID_PhanCong" onclick="downloadPDF('@item.ID_PhanCong')">
+                                                                    <i class="fas fa-download"></i>
+                                                                </button>
+                                                            }
+                                                            else { }
+                                                        </li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td style="text-align:center" colspan="8">Không có bản ghi nào</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Mã phân công</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Người tạo</th>
+                                        <th>Ngày ký</th>
+                                        <th>Người ký</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- Thêm cửa sổ modal thêm -->
+    @{ Html.RenderPartial("Add_PhanCong"); }
+    @{ Html.RenderPartial("Edit_PhanCong"); }
+</section>
+@section scripts{
+    <!---mở form thêm-->
+    <script>
+        $(document).ready(function () {
+            $('#openModalButton').click(function () {
+                $('#loading').show();
+                loadScript("/Assets/js/phancong.js");
+                function loadScript(url) {
+                    var script = document.createElement('script');
+                    script.src = url;
+                    document.head.appendChild(script);
+                }
+                $('#myModalAdd').modal('show');
+            });
+
+            $('#myModalAdd').on('shown.bs.modal', function () {
+                $('#loading').hide();
+            });
+
+            $('.close').on('click', function (e) {
+                $('#myModalAdd').modal('hide');
+            });
+        });
+    </script>
+    <!--Ân hiện button-->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elements = document.querySelectorAll('.status-2');
+            elements.forEach(function (element) {
+                var statusClassList = element.classList; // Danh sách các lớp CSS của phần tử
+                var status = null;
+                // Lặp qua từng lớp CSS trong danh sách
+                statusClassList.forEach(function (cssClass) {
+                    if (cssClass.startsWith('status-')) {
+                        var statusValue = parseInt(cssClass.split('-')[1]); // Lấy giá trị Status từ lớp CSS
+                        if (!isNaN(statusValue)) {
+                            status = statusValue;
+                        }
+                    }
+                });
+                // Kiểm tra điều kiện Session["NhomQuyen"] != 1000 trước khi ẩn/hiện phần tử
+                var nhomQuyen = parseInt('@Session["NhomQuyen"]'); // Lấy giá trị Session["NhomQuyen"] từ Razor
+                if (nhomQuyen !== 1000) {
+                    if (status === 1) {
+                        // Xử lý cho Status = 1
+                        element.style.display = 'block';
+                    } else if (status === 2) {
+                        // Xử lý cho Status = 2
+                        element.style.display = 'none';
+                    }
+                    // Thêm điều kiện cho các trạng thái khác tương tự ở đây
+                }
+            });
+        });
+    </script>
+    <!---Xóa-->
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btnDelete', function () {
+                var ID_PhanCong = $(this).data("id");
+                var Status = 0;
+                Swal.fire({
+                    title: 'Bạn chắc chắn muốn xóa lịch làm này ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, xóa nó',
+                    cancelButtonText: 'Không, hủy bỏ',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Delete_PhanCong',
+                            type: 'POST',
+                            data: { ID_PhanCong: ID_PhanCong, Status: Status },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa lịch làm: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///kích hoạt
+        $(document).ready(function () {
+            $('body').on('click', '.btnActive', function () {
+                var ID_PhanCong = $(this).data("ID_PhanCong");
+                Swal.fire({
+                    title: 'Bạn có muốn kích hoạt user này không ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, gửi nó',
+                    cancelButtonText: 'Hủy',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Active_user',
+                            type: 'POST',
+                            data: { ID_PhanCong: ID_PhanCong },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        ///duyệt
+        $(document).ready(function () {
+            $('body').on('click', '.btnApprove', function () {
+                var ID_PhanCong = $(this).data("id");
+                var Status = 2;
+                Swal.fire({
+                    title: 'Bạn có muốn duyệt lịch làm việc này không ?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, duyệt nó',
+                    cancelButtonText: 'Không',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'Approve_PhanCong',
+                            type: 'POST',
+                            data: { ID_PhanCong: ID_PhanCong, Status: Status },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    Swal.fire('Thành công', rs.message, 'success');
+                                    // do something
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    Swal.fire('Thất bại', rs.message, 'error');
+                                    // do something else
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire('Lỗi', 'Lỗi khi xóa chứng từ: ' + error, 'error');
+                                // do something else
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+                            }
+                        });
+                    }
+                })
+            });
+        });
+    </script>
+    <!---sửa-->
+    <script>
+        $('.btnEdit').click(function () {
+            $('#editModal').modal('show');
+            loadScript("/Assets/js/phancong.js");
+            function loadScript(url) {
+                var script = document.createElement('script');
+                script.src = url;
+                document.head.appendChild(script);
+            }
+            var ID_PhanCong = $(this).data('id');
+            $.ajax({
+                url: 'Edit_PhanCong',
+                type: 'GET',
+                dataType: 'json',
+                data: { ID_PhanCong: ID_PhanCong },
+                success: function (response) {
+                    if (!response && response.result && Array.isArray(response.result) && response.result.length === 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Thông báo',
+                            text: 'Dữ liệu trả về rỗng.'
+                        });
+                    } else {
+                        var dataThoiGian = response.ThoiGian;
+                        var dataKhoiSanXuat = response.KhoiSanXuat;
+                        var dataKhoiVanPhong = response.KhoiVanPhong;
+                        var dataThangNam = response.ThangNam;
+                        var formattedDateDisplayText = document.getElementById("selectedThangNam_Edit");
+                        var formattedDateDisplayValue = document.getElementById("idThangNam_BC_Edit");
+                        formattedDateDisplayText.textContent = "LỊCH PHÂN CÔNG CHẤM 6S: " + dataThangNam;
+                        formattedDateDisplayValue.value = dataThangNam;
+                        //console.log(dataThangNam);
+                        //console.table(dataThoiGian);
+                        //console.table(dataKhoiSanXuat);
+                        //console.table(dataKhoiVanPhong);
+                        var tableThoiGian = document.getElementById("previewTable_thoigian_Edit");
+                        var tableKhoiSanXuat = document.getElementById("previewTable_sanxuat_Edit");
+                        var tableKhoiVanPhong = document.getElementById("previewTable_vanphong_Edit");
+                        if (tableThoiGian && Array.isArray(dataThoiGian)) {
+                            var tbody = tableThoiGian.getElementsByTagName("tbody")[0];
+
+                            for (var i = 0; i < dataThoiGian.length; i++) {
+                                var row = tbody.insertRow(i);
+                                var isFirstCell = true; // Sử dụng để xác định cột đầu tiên
+
+                                for (var key in dataThoiGian[i]) {
+                                    if (dataThoiGian[i].hasOwnProperty(key)) {
+                                        if (isFirstCell) {
+                                            isFirstCell = false;
+                                            var cell = row.insertCell();
+                                            cell.innerHTML = dataThoiGian[i][key];
+                                            cell.classList.add("hidden-value");
+                                        } else {
+                                            var cell = row.insertCell();
+                                            cell.innerHTML = dataThoiGian[i][key];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (tableKhoiSanXuat && Array.isArray(dataKhoiSanXuat)) {
+                            var tbody = tableKhoiSanXuat.getElementsByTagName("tbody")[0];
+                            for (var i = 0; i < dataKhoiSanXuat.length; i++) {
+                                var row = tbody.insertRow(i);
+                                var cellID_PhanCong = row.insertCell();
+                                cellID_PhanCong.innerHTML = '<span class="hidden-value">' + dataKhoiSanXuat[i].ID_PhanCong + '</span>';
+                                cellID_PhanCong.style.display = 'none';
+                                var cellPhongBan = row.insertCell();
+                                cellPhongBan.innerHTML = '<span class="hidden-value">' + dataKhoiSanXuat[i].valuePhongBan + '</span>' + dataKhoiSanXuat[i].textTenPhongBan;
+                                var cellUsername = row.insertCell();
+                                cellUsername.innerHTML = '<span class="hidden-value">' + dataKhoiSanXuat[i].valueUsername + '</span>' + dataKhoiSanXuat[i].textUsername;
+                                var cellNVCaiTien = row.insertCell();
+                                cellNVCaiTien.innerHTML = dataKhoiSanXuat[i].NVCaiTien;
+                                var cellActions = row.insertCell();
+                                cellActions.innerHTML = '<button class="btn btn-outline-danger" onclick="deleteRow(this)">Xóa</button>';
+                            }
+                        }
+                        if (tableKhoiVanPhong && Array.isArray(dataKhoiVanPhong)) {
+                            var tbody = tableKhoiVanPhong.getElementsByTagName("tbody")[0];
+                            for (var i = 0; i < dataKhoiVanPhong.length; i++) {
+                                var row = tbody.insertRow(i);
+                                var cellID_PhanCong = row.insertCell();
+                                cellID_PhanCong.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].ID_PhanCong + '</span>';
+                                cellID_PhanCong.style.display = 'none';
+                                var cellPhongBan = row.insertCell();
+                                cellPhongBan.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].valuePhongBan + '</span>' + dataKhoiVanPhong[i].textTenPhongBan;
+                                var cellUsername = row.insertCell();
+                                cellUsername.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].valueUsername + '</span>' + dataKhoiVanPhong[i].textUsername;
+                                var cellActions = row.insertCell();
+                                cellActions.innerHTML = '<button class="btn btn-outline-danger" onclick="deleteRow(this)">Xóa</button>';
+                            }
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Lỗi khi lấy dữ liệu người dùng: ' + error
+                    });
+                    console.error('Lỗi:', error);
+                }
+            });
+        });
+        $('#btnCancel, .close').on('click', function (e) {
+            $('#editModal').modal('hide');
+            location.reload();
+        });
+        function deleteRow(btn) {
+            var row = btn.parentNode.parentNode;
+            var cells = row.getElementsByTagName("td");
+            var ID_PhanCong = cells[0].querySelector('.hidden-value').textContent;
+            var valuePhongBan = cells[1].querySelector('.hidden-value').textContent;
+            var valueUsername = cells[2].querySelector('.hidden-value').textContent;
+            Swal.fire({
+                title: 'Bạn chắc chắn muốn xóa lịch làm này ?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Có, xóa nó',
+                cancelButtonText: 'Không, hủy bỏ',
+                allowOutsideClick: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('Delete_PhanCong_Edit_Row', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'ID_PhanCong=' + ID_PhanCong + '&valuePhongBan=' + valuePhongBan + '&valueUsername=' + valueUsername + '&Status=' + 0
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.fire({
+                                title: data.success ? 'Đã xóa' : 'Lỗi',
+                                text: data.message,
+                                icon: data.success ? 'success' : 'error',
+                                confirmButtonText: 'Đóng'
+                            });
+                            // Xóa hàng khỏi bảng ngay cả khi có lỗi
+                            if (data.success) {
+                                row.parentNode.removeChild(row);
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                title: 'Lỗi',
+                                text: 'Xảy ra lỗi khi xóa dữ liệu!',
+                                icon: 'error',
+                                confirmButtonText: 'Đóng'
+                            });
+                            console.error('Có lỗi xảy ra:', error);
+                        });
+                }
+            });
+        }
+    </script>
+    <!--Hiển thị thông báo từ return Viewbag của controller-->
+    @{
+        // Lấy giá trị từ ViewBag và truyền vào mã nguồn JavaScript
+        string message = ViewBag.message != null ? ViewBag.message.ToString() : "";
+        string error = ViewBag.error != null ? ViewBag.error.ToString() : "";
+    }
+    <script>
+            $(document).ready(function() {
+                if('@message' !== "") {
+                    swal('@Html.Raw(message)');
+
+                    swal({
+                        title: '@Html.Raw(message)',
+                        text: 'Thành công!',
+                        icon: 'success',
+                         timer: 2000
+                    }).then(function () {
+                        window.location.href = "Index_PhanCong";
+                    });
+                }
+                if('@error' !== "") {
+                    swal({
+                        title: '@Html.Raw(error)',
+                        icon: 'error',
+                      buttons: {
+                        ok: "OK"
+                      }
+                    })
+                    .then((value) => {
+                        if (value) {
+                            // Delay the redirection by a few seconds
+                            setTimeout(function () {
+                                window.location.href = "Index_PhanCong";
+                            }, 2000); // Wait for 2 seconds before redirecting
+                        }
+                    });
+                }
+            });
+    </script>
+    <!---Hiển thị tháng đã chọn lên html khác-->
+    <script>
+        $(document).ready(function () {
+            // Hàm hiển thị giá trị đã chọn
+            function showSelectedThangNam() {
+                var thangNamChon = $("#idThangNam_BC").val();
+                $("#selectedThangNam").text("LỊCH PHÂN CÔNG CHẤM 6S: " + thangNamChon);
+            }
+            // Thiết lập giá trị mặc định cho trường tháng đánh giá
+            var thangNam = moment().format("YYYY-MM");
+            $("#idThangNam_BC").val(thangNam);
+            // Cập nhật phạm vi ngày ban đầu
+            showSelectedThangNam();
+            $("#idThangNam_BC").change(function () {
+                showSelectedThangNam();
+            });
+        });
+    </script>
+    <!---ẩn hiển các table-->
+    <script>
+        function updateEmptyCellCount() {
+            const cells = document.querySelectorAll('#previewTable_thoigian tbody td');
+            let count = 0;
+
+            cells.forEach(cell => {
+                if (cell.innerText.trim() === '') {
+                    count++;
+                }
+            });
+
+            //console.log('Số lượng ô trống:', count);
+            // Kiểm tra giá trị của count
+            if (count <= 1) {
+                // Hiển thị phần tử có id là "nhanSuDanhGiaChamCheoSection"
+                document.getElementById('nhanSuDanhGiaChamCheoSection').style.display = 'block';
+                document.getElementById('btnGuiDuLieu').style.display = 'block';//btnGuiDuLieu
+            } else {
+                // Ẩn phần tử có id là "nhanSuDanhGiaChamCheoSection"
+                document.getElementById('nhanSuDanhGiaChamCheoSection').style.display = 'none';
+                document.getElementById('btnGuiDuLieu').style.display = 'none';//btnGuiDuLieu
+            }
+        }
+        // Tạo một Observer mới
+        const observer = new MutationObserver(mutationsList => {
+            // Trong mỗi lần có sự thay đổi trong bảng
+            // Gọi hàm để cập nhật số lượng ô trống
+            updateEmptyCellCount();
+        });
+        // Đảm bảo rằng HTML đã được tải hoàn toàn trước khi chạy mã JavaScript
+        window.addEventListener('DOMContentLoaded', () => {
+            // Gọi hàm để tính số lượng ô trống ban đầu
+            updateEmptyCellCount();
+            // Chọn bảng mà bạn muốn lắng nghe sự thay đổi
+            const table = document.querySelector('#previewTable_thoigian tbody');
+            // Bắt đầu lắng nghe sự thay đổi trong bảng
+            observer.observe(table, { subtree: true, childList: true });
+        });
+    </script>
+    <!---Tải files-->
+    <script>
+        function downloadPDF(ID_PhanCong) {
+            Swal.fire({
+                title: 'Chuẩn bị tải xuống ...',
+                text: 'Vui lòng chờ ...',
+                icon: 'info',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            ID_PhanCong = encodeURIComponent(ID_PhanCong);
+            var downloadUrl = '@Url.Action("DownloadPDFFile", "PhanCong")?ID_PhanCong=' + ID_PhanCong;
+            var link = document.createElement('a');
+            link.href = downloadUrl;
+            link.target = '_blank';
+            link.addEventListener('click', function() {
+                Swal.close();
+                Swal.fire({
+                    title: 'Đang tải...',
+                    text: 'Vui lòng chờ...',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false
+                });
+                setTimeout(function() {
+                    checkDownloadStatus(downloadUrl);
+                }, 5000);
+            });
+            link.click();
+        }
+
+        // Function to check download status
+        function checkDownloadStatus(downloadUrl) {
+            // Send a HEAD request to the download URL
+            var xhr = new XMLHttpRequest();
+            xhr.open('HEAD', downloadUrl, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.status === 200) {
+                    Swal.fire({
+                        title: 'Tải xuống thành công',
+                        text: 'Tệp đã tải xuống thành công!',
+                        icon: 'success',
+                        timer: 2000
+                    }).then(function () {
+                        window.location.href = "Index_PhanCong";
+                    });
+                } else {
+                    // Parse the response JSON for the error message
+                    var response = JSON.parse(xhr.responseText);
+                    var errorMessage = response.message;
+
+                    Swal.fire({
+                        title: 'Tải xuống thất bại',
+                        text: errorMessage, // Display the specific error message
+                        icon: 'error',
+                        timer: 3000
+                    }).then(function () {
+                        window.location.href = "Index_PhanCong";
+                    });
+                }
+            };
+            xhr.send();
+        }
+    </script>
+
+}
