@@ -12,7 +12,6 @@ function loadData() {
 /*            console.log(jsonData);*/
             var nhomQuyen = jsonData.NhomQuyen;
             updateDateRange(nhomQuyen);
-            updateDateRange_Edit(nhomQuyen);
             var PhongBan = $('#PhongBan');
             var Username = $('#Username');
             PhongBan.empty();
@@ -444,7 +443,65 @@ $('#btnGuiDuLieu').on('click', function () {
     });
 });
 //sửa
-function updateDateRange_Edit(nhomQuyen) {
+function loadData_Edit() {
+    var maKhoi_Edit = $('#Ma_Khoi_Edit').val();
+    $.ajax({
+        url: '/DataApi/Get_PhongBanUsers_From_Khoi',
+        type: 'GET',
+        data: { maKhoi: btoa(maKhoi_Edit) },
+        success: function (data) {
+            var decodedJson = atob(data);
+            var decodedString = decodeURIComponent(escape(decodedJson));
+            var jsonData = JSON.parse(decodedString);
+            console.log(jsonData);
+            var nhomQuyen_Edit = jsonData.NhomQuyen;
+            updateDateRange_Edit(nhomQuyen_Edit);
+            var PhongBan_Edit = $('#PhongBan_Edit');
+            var Username_Edit = $('#Username_Edit');
+            PhongBan_Edit.empty();
+            Username_Edit.empty();
+            if (jsonData.PhongBanList.length > 0) {
+                $.each(jsonData.PhongBanList, function (i, item) {
+                    PhongBan_Edit.append($('<option>').text(item.TenPhongBan).attr('value', item.ID_PhongBan));
+                    //    console.log(item.ID_PhongBan, item.TenPhongBan);
+                });
+            } else {
+                PhongBan_Edit.append($('<option>').text('-- Không có kết quả --'));
+            }
+            if (jsonData.UserList.length > 0) {
+                $.each(jsonData.UserList, function (i, item) {
+                    Username_Edit.append($('<option>').text(item.Fullname).attr('value', item.Username));
+                    //    console.log(item.Username, item.Fullname);
+                });
+            } else {
+                Username_Edit.append($('<option>').text('-- Không có kết quả --'));
+            }
+            $('#loading').hide();
+        },
+        error: function (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Có lỗi xảy ra khi lấy dữ liệu từ máy chủ.',
+                footer: '<pre>' + error + '</pre>'
+            });
+        }
+    });
+}
+// Lắng nghe sự kiện thay đổi giá trị của dropdown "Khối"
+$('#Ma_Khoi_Edit').change(function () {
+    var selectedKhoi_Edit = $(this).val();
+    loadData_Edit();
+    if (selectedKhoi_Edit === 'K2') {
+        $('#NVCaiTien_Edit').parent().css('display', 'none');
+    } else {
+        $('#NVCaiTien_Edit').parent().css('display', 'block');
+    }
+    //    console.log(selectedKhoi);
+});
+// Load dữ liệu khi trang được tải
+loadData_Edit();
+function updateDateRange_Edit(nhomQuyen_Edit) {
     if (flag) {
         var thangNamChon_Edit = $("#idThangNam_BC_Edit").val();
         var ngayBatDau_Edit = moment(thangNamChon_Edit, "YYYY-MM").startOf('month');
@@ -461,7 +518,7 @@ function updateDateRange_Edit(nhomQuyen) {
         });
         fixedStartDate_Edit = ngayBatDau_Edit;
         /*        console.log(nhomQuyen);*/
-        if (nhomQuyen !== '1000') {
+        if (nhomQuyen_Edit !== '1000') {
             var currentDate = new Date();
             var currentYear = currentDate.getFullYear();
             var currentMonth = currentDate.getMonth() + 1;
