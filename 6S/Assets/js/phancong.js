@@ -453,7 +453,7 @@ function loadData_Edit() {
             var decodedJson = atob(data);
             var decodedString = decodeURIComponent(escape(decodedJson));
             var jsonData = JSON.parse(decodedString);
-            console.log(jsonData);
+/*            console.log(jsonData);*/
             var nhomQuyen_Edit = jsonData.NhomQuyen;
             updateDateRange_Edit(nhomQuyen_Edit);
             var PhongBan_Edit = $('#PhongBan_Edit');
@@ -634,7 +634,6 @@ function btnLuuTamThoiGian_Edit() {
             });
             return;
         }
-        // Đoạn mã xử lý cho Chấm Nội Bộ
         cellsGio[2].textContent = gio;
         cellsNgay[2].textContent = displayDate;
     }
@@ -651,11 +650,208 @@ function btnLuuTamThoiGian_Edit() {
             chungTuTonTai = true;
             break;
         case 'NB': // Chấm nội bộ
-            // Đã xử lý ở phía trên
             break;
         default:
             break;
     }
 }
+//lưu 2 table bên dưới
+function luuTam_Edit(tableId_Edit) {
+    // Lấy giá trị từ dropdown
+    var khoiValue_Edit = $('#Ma_Khoi_Edit').val(); // Lấy giá trị (value) của dropdown "Khối"
+    var phongBanValue_Edit = $('#PhongBan_Edit').val(); // Lấy giá trị (value) của dropdown "Phòng Ban"
+    var thanhVienValue_Edit = $('#Username_Edit').val(); // Lấy giá trị (value) của dropdown "Thành viên Ban ĐH"
+    var toCaiTienValue_Edit = $('#NVCaiTien_Edit').val(); // Lấy giá trị (value) của dropdown "Tổ Cải Tiến"
+
+    var khoiText_Edit = $('#Ma_Khoi_Edit option:selected').text(); // Lấy nội dung text của dropdown "Khối"
+    var phongBanText_Edit = $('#PhongBan_Edit option:selected').text(); // Lấy nội dung text của dropdown "Phòng Ban"
+    var thanhVienText_Edit = $('#Username_Edit option:selected').text(); // Lấy nội dung text của dropdown "Thành viên Ban ĐH"
+    var toCaiTienText_Edit = $('#NVCaiTien_Edit option:selected').text(); // Lấy nội dung text của dropdown "Tổ Cải Tiến"
+
+    // Tìm bảng và tbody tương ứng
+    var table = $('#' + tableId_Edit);
+    var tbody = table.find('tbody');
+    // Tạo hàng mới và thêm ô vào hàng
+    var newRow = $('<tr>');
+    newRow.append($('<td>').text(phongBanText_Edit).data('value', phongBanValue_Edit));
+    newRow.append($('<td>').text(thanhVienText_Edit).data('value', thanhVienValue_Edit));
+    // Đối với Khối Sản Xuất, thêm cột "Tổ Cải Tiến"
+    if (khoiText_Edit === 'Khối Sản Xuất') {
+        newRow.append($('<td>').text(toCaiTienText_Edit).data('value', toCaiTienValue_Edit));
+    }
+    // Tạo nút Xóa Dòng và thêm vào hàng mới
+    var deleteButton = $('<button>').text('Xóa').addClass('btn btn-outline-danger delete-row');
+    newRow.append($('<td>').append(deleteButton));
+    // Thêm hàng mới vào tbody
+    tbody.append(newRow);
+
+    //// Đây là giá trị từ các dropdown để gửi đi
+    console.table("Giá trị của Khối: " + khoiValue_Edit, khoiText_Edit);
+    console.table("Giá trị của Phòng Ban: " + phongBanValue_Edit, phongBanText_Edit);
+    console.table("Giá trị của Thành viên Ban ĐH: " + thanhVienValue_Edit, thanhVienText_Edit);
+    console.table("Giá trị của Tổ Cải Tiến: " + toCaiTienValue_Edit, toCaiTienText_Edit);
+}
+
+// Sự kiện click cho nút "Lưu tạm"
+$('#btnLuuTam_Edit').on('click', function () {
+    var khoiText_Edit = $('#Ma_Khoi_Edit option:selected').text();
+
+    // Chọn bảng dựa trên giá trị của dropdown "Khối"
+    if (khoiText_Edit === 'Khối Sản Xuất') {
+        luuTam_Edit('previewTable_sanxuat_Edit');
+    } else if (khoiText_Edit === 'Khối Văn Phòng') {
+        luuTam_Edit('previewTable_vanphong_Edit');
+    }
+});
+// Xóa dòng khi click vào nút Xóa
+$('#previewTable_sanxuat_Edit tbody').on('click', '.delete-row', function () {
+    $(this).closest('tr').remove();
+});
+$('#previewTable_vanphong_Edit tbody').on('click', '.delete-row', function () {
+    $(this).closest('tr').remove();
+});
+///gửi dữ liệu đi
+function gatherSanXuatData_Edit() {
+    var sanXuatData_Edit = [];
+
+    $('#previewTable_sanxuat_Edit tbody tr').each(function () {
+        var rowData_Edit = [];
+
+        $(this).find('td').each(function () {
+            var cellValue_Edit = $(this).data('value'); // Lấy giá trị từ thuộc tính data-value của ô
+            var cellText_Edit = $(this).text(); // Lấy văn bản từ ô
+
+            var cellData_Edit = {
+                value: cellValue_Edit,
+                text: cellText_Edit
+            };
+
+            rowData_Edit.push(cellData_Edit);
+        });
+
+        sanXuatData_Edit.push(rowData_Edit);
+    });
+
+    console.log('Dữ liệu sản xuất:', sanXuatData_Edit);
+    return sanXuatData_Edit;
+}
+
+function gatherVanPhongData_Edit() {
+    var vanPhongData_Edit = [];
+    $('#previewTable_vanphong_Edit tbody tr').each(function () {
+        var rowData_Edit = [];
+        $(this).find('td').each(function (index) {
+            var cellValue_Edit = $(this).data('value'); // Lấy giá trị từ thuộc tính data-value của ô
+            var cellText_Edit = $(this).text(); // Lấy văn bản từ ô
+
+            // Lưu cả giá trị và văn bản vào mảng
+            var cellData_Edit = {
+                value: cellValue_Edit,
+                text: cellText_Edit
+            };
+
+            if (index !== 2) {
+                rowData_Edit.push(cellData_Edit);
+            }
+        });
+        vanPhongData_Edit.push(rowData_Edit);
+    });
+    console.log('dữ vp', vanPhongData_Edit);
+    return vanPhongData_Edit;
+}
+
+
+function gatherThoiGianData_Edit() {
+    var gioData_Edit = [];
+    var ngayData_Edit = [];
+
+    $('#previewTable_thoigian_Edit tbody tr:nth-child(1) td').each(function () {
+        gioData_Edit.push($(this).text());
+    });
+
+    $('#previewTable_thoigian_Edit tbody tr:nth-child(2) td').each(function () {
+        ngayData_Edit.push($(this).text());
+    });
+    console.table('gio ngay', gioData_Edit, ngayData_Edit);
+    return {
+        gioData_Edit: gioData_Edit,
+        ngayData_Edit: ngayData_Edit
+    };    
+}
+$('#btnGuiDuLieu_Edit').on('click', function () {
+    $('#loading').show();
+    var sanXuatData_Edit = gatherSanXuatData_Edit();
+    var vanPhongData_Edit = gatherVanPhongData_Edit();
+    var thoigianData_Edit = gatherThoiGianData_Edit();
+    console.table('dữ all 1',sanXuatData_Edit, vanPhongData_Edit, thoigianData_Edit);
+    var dataToSend_Edit = {
+        sanXuatData_Edit: sanXuatData_Edit,
+        vanPhongData_Edit: vanPhongData_Edit,
+        thoigianData_Edit: thoigianData_Edit
+    };
+
+    // Chuyển đổi dữ liệu JSON thành chuỗi JSON
+    var jsonData_Edit = JSON.stringify(dataToSend_Edit);
+
+    // Chuyển đổi chuỗi JSON thành dạng byte array
+    var encoder_Edit = new TextEncoder();
+    var jsonDataUint8_Edit = encoder_Edit.encode(jsonData_Edit);
+
+    // Mã hóa dạng byte array thành Base64
+    var encodedData_Edit = btoa(String.fromCharCode.apply(null, jsonDataUint8_Edit));
+
+    // Tạo một đối tượng FormData và thêm dữ liệu Base64 vào đó
+    var formData_Edit = new FormData();
+    formData_Edit.append("json", encodedData_Edit);
+
+    $.ajax({
+        url: 'Edit_PhanCong',
+        method: 'POST',
+        contentType: false, // Không thiết lập contentType
+        processData: false, // Không xử lý dữ liệu
+        data: formData_Edit,
+        success: function (response) {
+            if (response.success) {
+                // Hiển thị thông báo thành công
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message,
+                    icon: 'success',
+                    timer: 2000, // Hiển thị trong 2 giây
+                    timerProgressBar: true,
+                }).then(function () {
+                    location.reload();
+                });
+                //console.log(response.userList);
+            } else {
+                $('#loading').hide();
+                // Hiển thị thông báo lỗi
+                Swal.fire({
+                    title: 'Error!',
+                    text: response.message,
+                    icon: 'error',
+                    timer: 2000, // Hiển thị trong 2 giây
+                    timerProgressBar: true,
+                }).then(function () {
+                    location.reload();
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            $('#loading').hide();
+            // Hiển thị thông báo lỗi
+            Swal.fire({
+                title: 'Error!',
+                text: 'Lỗi khi gửi dữ liệu: ' + error,
+                icon: 'error',
+                timer: 2000, // Hiển thị trong 2 giây
+                timerProgressBar: true,
+            }).then(function () {
+                location.reload();
+            });
+        }
+    });
+});
+
 
 

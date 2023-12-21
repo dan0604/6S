@@ -766,6 +766,10 @@ namespace _6S.Controllers
                     {
                         try
                         {
+                            string encodedJson = Request.Form["json"];
+                            // Giải mã chuỗi JSON từ Base64
+                            byte[] data = Convert.FromBase64String(encodedJson);
+                            string jsonData = Encoding.UTF8.GetString(data);
                             SqlParameter[] parameters_PhanCong = new SqlParameter[]
                             {
                                 new SqlParameter("@ID_PhanCong", SqlDbType.VarChar, 10) { Value = phancong_L.ID_PhanCong },
