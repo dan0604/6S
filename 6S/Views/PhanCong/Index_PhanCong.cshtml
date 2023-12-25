@@ -356,16 +356,17 @@
                         var dataKhoiSanXuat = response.KhoiSanXuat;
                         var dataKhoiVanPhong = response.KhoiVanPhong;
                         var dataThangNam = response.ThangNam;
+                        var MaPC = response.ID_PhanCong;
                         var formattedDateDisplayText = document.getElementById("selectedThangNam_Edit");
                         var formattedDateDisplayValue = document.getElementById("idThangNam_BC_Edit");
-                        formattedDateDisplayText.textContent = "LỊCH PHÂN CÔNG CHẤM 6S: " + dataThangNam;
+                        formattedDateDisplayText.textContent = "LỊCH PHÂN CÔNG CHẤM 6S: " + dataThangNam + " " + "Mã phân công: " + MaPC;
                         formattedDateDisplayValue.value = dataThangNam;
                         //console.log(dataThangNam);
                         //console.table(dataThoiGian);
-                        //console.table(dataKhoiSanXuat);
+                        console.table(dataKhoiSanXuat);
                         //console.table(dataKhoiVanPhong);
                         var tableThoiGian = document.getElementById("previewTable_thoigian_Edit");
-                        var tableKhoiSanXuat = document.getElementById("previewTable_sanxuat_Edit");
+                        var tableKhoiSanXuat = document.getElementById("tableBody_sanxuat_Edit");
                         var tableKhoiVanPhong = document.getElementById("previewTable_vanphong_Edit");
                         if (tableThoiGian && Array.isArray(dataThoiGian)) {
                             var tbody = tableThoiGian.getElementsByTagName("tbody")[0];
@@ -380,7 +381,6 @@
                                             isFirstCell = false;
                                             var cell = row.insertCell();
                                             cell.innerHTML = dataThoiGian[i][key];
-                                            cell.classList.add("hidden-value");
                                         } else {
                                             var cell = row.insertCell();
                                             cell.innerHTML = dataThoiGian[i][key];
@@ -389,39 +389,74 @@
                                 }
                             }
                         }
+                        dataKhoiSanXuat.forEach(function (data) {
+                            var row = document.createElement("tr");
 
-                        if (tableKhoiSanXuat && Array.isArray(dataKhoiSanXuat)) {
-                            var tbody = tableKhoiSanXuat.getElementsByTagName("tbody")[0];
-                            for (var i = 0; i < dataKhoiSanXuat.length; i++) {
-                                var row = tbody.insertRow(i);
-                                var cellID_PhanCong = row.insertCell();
-                                cellID_PhanCong.innerHTML = '<span class="hidden-value">' + dataKhoiSanXuat[i].ID_PhanCong + '</span>';
-                                cellID_PhanCong.style.display = 'none';
-                                var cellPhongBan = row.insertCell();
-                                cellPhongBan.innerHTML = '<span class="hidden-value">' + dataKhoiSanXuat[i].valuePhongBan + '</span>' + dataKhoiSanXuat[i].textTenPhongBan;
-                                var cellUsername = row.insertCell();
-                                cellUsername.innerHTML = '<span class="hidden-value">' + dataKhoiSanXuat[i].valueUsername + '</span>' + dataKhoiSanXuat[i].textUsername;
-                                var cellNVCaiTien = row.insertCell();
-                                cellNVCaiTien.innerHTML = dataKhoiSanXuat[i].NVCaiTien;
-                                var cellActions = row.insertCell();
-                                cellActions.innerHTML = '<button class="btn btn-outline-danger" onclick="deleteRow(this)">Xóa</button>';
-                            }
-                        }
-                        if (tableKhoiVanPhong && Array.isArray(dataKhoiVanPhong)) {
-                            var tbody = tableKhoiVanPhong.getElementsByTagName("tbody")[0];
-                            for (var i = 0; i < dataKhoiVanPhong.length; i++) {
-                                var row = tbody.insertRow(i);
-                                var cellID_PhanCong = row.insertCell();
-                                cellID_PhanCong.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].ID_PhanCong + '</span>';
-                                cellID_PhanCong.style.display = 'none';
-                                var cellPhongBan = row.insertCell();
-                                cellPhongBan.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].valuePhongBan + '</span>' + dataKhoiVanPhong[i].textTenPhongBan;
-                                var cellUsername = row.insertCell();
-                                cellUsername.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].valueUsername + '</span>' + dataKhoiVanPhong[i].textUsername;
-                                var cellActions = row.insertCell();
-                                cellActions.innerHTML = '<button class="btn btn-outline-danger" onclick="deleteRow(this)">Xóa</button>';
-                            }
-                        }
+                            var cellPhongBan = document.createElement("td");
+                            cellPhongBan.setAttribute("value-phongban", data.valuePhongBan);
+                            cellPhongBan.textContent = data.textTenPhongBan;
+                            row.appendChild(cellPhongBan);
+
+                            var cellUsername = document.createElement("td");
+                            cellUsername.setAttribute("value-username", data.valueUsername);
+                            cellUsername.textContent = data.textUsername;
+                            row.appendChild(cellUsername);
+
+                            var cellNVCaiTien = document.createElement("td");
+                            cellNVCaiTien.setAttribute("nvcaitien", data.valueNVCaiTien);
+                            cellNVCaiTien.textContent = data.textNVCaiTien;
+                            row.appendChild(cellNVCaiTien);
+
+                            var cellActions = document.createElement("td");
+                            var deleteButton = document.createElement("button");
+                            deleteButton.className = "btn btn-outline-danger";
+                            deleteButton.textContent = "Xóa";
+                            deleteButton.onclick = function () {
+                                // Viết logic xử lý xóa hàng ở đây nếu cần
+                                // Ví dụ: this.closest('tr').remove();
+                            };
+                            cellActions.appendChild(deleteButton);
+                            row.appendChild(cellActions);
+
+                            tableKhoiSanXuat.appendChild(row);
+                        });
+                        dataKhoiVanPhong.forEach(function (data) {
+                            var row = document.createElement("tr");
+
+                            var cellPhongBan = document.createElement("td");
+                            cellPhongBan.setAttribute("value-phongban", data.valuePhongBan);
+                            cellPhongBan.textContent = data.textTenPhongBan;
+                            row.appendChild(cellPhongBan);
+
+                            var cellUsername = document.createElement("td");
+                            cellUsername.setAttribute("value-username", data.valueUsername);
+                            cellUsername.textContent = data.textUsername;
+                            row.appendChild(cellUsername);
+                            var cellActions = document.createElement("td");
+                            var deleteButton = document.createElement("button");
+                            deleteButton.className = "btn btn-outline-danger";
+                            deleteButton.textContent = "Xóa";
+                            deleteButton.onclick = function () {
+                                // Viết logic xử lý xóa hàng ở đây nếu cần
+                                // Ví dụ: this.closest('tr').remove();
+                            };
+                            cellActions.appendChild(deleteButton);
+                            row.appendChild(cellActions);
+
+                            tableKhoiVanPhong.appendChild(row);
+                        });
+                        //    if (tableKhoiVanPhong && Array.isArray(dataKhoiVanPhong)) {
+                        //        var tbody = tableKhoiVanPhong.getElementsByTagName("tbody")[0];
+                        //        for (var i = 0; i < dataKhoiVanPhong.length; i++) {
+                        //            var row = tbody.insertRow(i);
+                        //            var cellPhongBan = row.insertCell();
+                        //            cellPhongBan.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].valuePhongBan + '</span>' + dataKhoiVanPhong[i].textTenPhongBan;
+                        //            var cellUsername = row.insertCell();
+                        //            cellUsername.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].valueUsername + '</span>' + dataKhoiVanPhong[i].textUsername;
+                        //            var cellActions = row.insertCell();
+                        //            cellActions.innerHTML = '<button class="btn btn-outline-danger" onclick="deleteRow(this)">Xóa</button>';
+                        //        }
+                        //    }
                     }
                 },
                 error: function (xhr, status, error) {
@@ -486,6 +521,82 @@
             });
         }
     </script>
+    <script>
+        // Hàm để hiển thị dữ liệu từ bảng khi button được nhấn
+        function showTableData() {
+            var table = document.getElementById("previewTable_sanxuat_Edit");
+
+            if (table) {
+                var data = [];
+
+                for (var i = 0; i < table.rows.length; i++) {
+                    var row = table.rows[i];
+                    var rowData = {};
+
+                    var cells = row.getElementsByTagName("td");
+                    if (cells.length > 0) {
+                        rowData.valuePhongBan = cells[0].getAttribute('value-phongban');
+                        rowData.textTenPhongBan = cells[0].textContent.trim();
+
+                        rowData.valueUsername = cells[1].getAttribute('value-username');
+                        rowData.textUsername = cells[1].textContent.trim();
+
+                        rowData.valueNVCaiTien = cells[2].getAttribute('nvcaitien');
+                        rowData.textNVCaiTien = cells[2].textContent.trim();
+
+                        data.push(rowData);
+                    }
+                }
+
+                // Hiển thị dữ liệu trong console
+                console.log('Dữ liệu từ bảng:');
+                console.table(data);
+            } else {
+                console.log('Không tìm thấy bảng có ID "previewTable_sanxuat_Edit".');
+            }
+        }
+
+        // Gắn sự kiện click cho button
+        var showDataBtn = document.getElementById('showDataBtn');
+        showDataBtn.addEventListener('click', showTableData);
+    </script>
+    <script>
+        // Hàm để hiển thị dữ liệu từ bảng khi button được nhấn
+        function showTableData() {
+            var table = document.getElementById("previewTable_vanphong_Edit");
+
+            if (table) {
+                var data = [];
+
+                for (var i = 0; i < table.rows.length; i++) {
+                    var row = table.rows[i];
+                    var rowData = {};
+
+                    var cells = row.getElementsByTagName("td");
+                    if (cells.length > 0) {
+                        rowData.valuePhongBan = cells[0].getAttribute('value-phongban');
+                        rowData.textTenPhongBan = cells[0].textContent.trim();
+
+                        rowData.valueUsername = cells[1].getAttribute('value-username');
+                        rowData.textUsername = cells[1].textContent.trim();
+
+                        data.push(rowData);
+                    }
+                }
+
+                // Hiển thị dữ liệu trong console
+                console.log('Dữ liệu từ bảng:');
+                console.table(data);
+            } else {
+                console.log('Không tìm thấy bảng có ID "previewTable_vanphong_Edit".');
+            }
+        }
+
+        // Gắn sự kiện click cho button
+        var showDataBtn = document.getElementById('showDataBtnx');
+        showDataBtn.addEventListener('click', showTableData);
+    </script>
+
     <!--Hiển thị thông báo từ return Viewbag của controller-->
     @{
         // Lấy giá trị từ ViewBag và truyền vào mã nguồn JavaScript
@@ -613,7 +724,7 @@
                 });
                 setTimeout(function() {
                     checkDownloadStatus(downloadUrl);
-                }, 5000);
+                }, 2000);
             });
             link.click();
         }

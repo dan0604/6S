@@ -651,13 +651,12 @@ namespace _6S.Controllers
                     DataTable KhoiSanXuat = new DataTable("KhoiSanXuat");
                     DataTable KhoiVanPhong = new DataTable("KhoiVanPhong");
                     // Tạo cột DataTable ThoiGian
-                    ThoiGian.Columns.Add("ID_PhanCong");
                     ThoiGian.Columns.Add("6S");
                     ThoiGian.Columns.Add("Chấm nội bộ");
                     ThoiGian.Columns.Add("Chấm chéo");
                     ThoiGian.Columns.Add("Chấm hiệu chỉnh");
-                    var gioValueList = new List<string> { ID_PhanCong, "Giờ", gioValue_NB, gioValue_CH, gioValue_HC };
-                    var ngayValueList = new List<string> { ID_PhanCong, "Ngày", thoiGian_NB, thoiGian_CH, thoiGian_HC };
+                    var gioValueList = new List<string> {"Giờ", gioValue_NB, gioValue_CH, gioValue_HC };
+                    var ngayValueList = new List<string> {"Ngày", thoiGian_NB, thoiGian_CH, thoiGian_HC };
                     // Thêm dữ liệu từ gioData vào hàng thứ hai của DataTable
                     DataRow rowGioData = ThoiGian.NewRow();
                     for (int i = 0; i < gioValueList.Count; i++)
@@ -673,7 +672,6 @@ namespace _6S.Controllers
                     }
                     ThoiGian.Rows.InsertAt(rowNgayData, 1);
                     //Tạo cột DataTable KhoiVanPhong
-                    KhoiVanPhong.Columns.Add("ID_PhanCong", typeof(string));
                     KhoiVanPhong.Columns.Add("valuePhongBan", typeof(string));
                     KhoiVanPhong.Columns.Add("textTenPhongBan", typeof(string));
                     KhoiVanPhong.Columns.Add("valueUsername", typeof(string));
@@ -684,7 +682,6 @@ namespace _6S.Controllers
                         DataRow row = KhoiVanPhong.NewRow();
                         var dataPhongban = db.Tbl_PhongBan.Where(x => x.ID_PhongBan == item.PhongBan).FirstOrDefault();
                         var dataUser_Get_K2 = db.Tbl_User.Where(x => x.Username == item.Username).FirstOrDefault();
-                        row["ID_PhanCong"] = item.ID_PhanCong;
                         row["valuePhongBan"] = item.PhongBan;
                         row["textTenPhongBan"] = dataPhongban.TenPhongBan;
                         row["valueUsername"] = item.Username;
@@ -692,29 +689,30 @@ namespace _6S.Controllers
                         KhoiVanPhong.Rows.Add(row);
                     }
                     // Thêm cột cho DataTable KhoiSanXuat
-                    KhoiSanXuat.Columns.Add("ID_PhanCong", typeof(string));
                     KhoiSanXuat.Columns.Add("valuePhongBan", typeof(string));
                     KhoiSanXuat.Columns.Add("textTenPhongBan", typeof(string));
                     KhoiSanXuat.Columns.Add("valueUsername", typeof(string));
                     KhoiSanXuat.Columns.Add("textUsername", typeof(string));
-                    KhoiSanXuat.Columns.Add("NVCaiTien", typeof(string));
+                    KhoiSanXuat.Columns.Add("textNVCaiTien", typeof(string));
+                    KhoiSanXuat.Columns.Add("valueNVCaiTien", typeof(string));
                     foreach (var item in dataPhancong_L_CH_K1)
                     {
                         DataRow row = KhoiSanXuat.NewRow();
                         var dataPhongban = db.Tbl_PhongBan.Where(x => x.ID_PhongBan == item.PhongBan && x.Ma_Khoi == "K1").FirstOrDefault();
                         var dataUser_Get_K1 = db.Tbl_User.Where(x => x.Username == item.Username).FirstOrDefault();
-                        row["ID_PhanCong"] = item.ID_PhanCong;
                         row["valuePhongBan"] = item.PhongBan;
                         row["textTenPhongBan"] = dataPhongban.TenPhongBan;
                         row["valueUsername"] = item.Username;
                         row["textUsername"] = dataUser_Get_K1.Fullname;
-                        row["NVCaiTien"] = item.NVCaiTien;
+                        row["textNVCaiTien"] = item.NVCaiTien;
+                        row["valueNVCaiTien"] = item.NVCaiTien;
                         KhoiSanXuat.Rows.Add(row);
                     }
                     if (dataPhancong_H != null)
                     {
                         var result = new
                         {
+                            ID_PhanCong = ID_PhanCong,
                             ThangNam = formattedDate,
                             ThoiGian = ThoiGian,
                             KhoiSanXuat = KhoiSanXuat,

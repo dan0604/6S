@@ -4,7 +4,7 @@ delete from dbo.Tbl_BaoCao_Cham6S_L where Ma_BC =''
 delete Tbl_BaoCao_Cham6S_L where Ma_BC = 'CH202310007'
 update dbo.Tbl_PhanCong_H set Status = '1' , Ngay_Ky =  null, Nguoi_Ky = null where ID_PhanCong = 'PC202312001'
 update dbo.Tbl_PhanCong_L set Status = '1' where ID_PhanCong = 'PC202312001'
-select * from dbo.Tbl_PhanCong_L
+select * from dbo.Tbl_PhongBan
 select * from dbo.Tbl_PhanCong_H
 select * from dbo.Tbl_PhanCong_L where ID_PhanCong = 'PC202312002' and Status = 0
 update dbo.Tbl_PhanCong_L set Status = 1 where ID_PhanCong = 'PC202312002' and Username ='thaonhi928@gmail.com' and PhongBan ='PB9' and Status = 0
