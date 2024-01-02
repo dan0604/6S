@@ -116,6 +116,7 @@ namespace _6S.Controllers
                     var recordToUpdate = db.Tbl_NhanVienCaiTien.Find(ID);
                     if (recordToUpdate != null)
                     {
+                        recordToUpdate.TenNV = NhanVienCaiTien.TenNV;
                         db.Entry(recordToUpdate).Property(x => x.TenNV).IsModified = true;
                         db.SaveChanges();
                         logger.Info("cập nhật NhanVienCaiTien: " + ID + " " + " thành công" + "NhanVienCaiTien Update: " + Session["ID"]?.ToString());
@@ -172,7 +173,7 @@ namespace _6S.Controllers
                     var recordToDelete = db.Tbl_NhanVienCaiTien.Find(ID);
                     if (recordToDelete != null)
                     {
-                        db.Entry(recordToDelete).Property(x => x.TenNV).IsModified = true;
+                        db.Tbl_NhanVienCaiTien.Remove(recordToDelete);
                         db.SaveChanges();
                         logger.Info("Xóa NhanVienCaiTien: " + ID + " " + " thành công" + "NhanVienCaiTien del: " + Session["ID"]?.ToString());
                         var datalist = db.Tbl_NhanVienCaiTien.ToList();

@@ -842,7 +842,7 @@ namespace _6S.Controllers
                     var item = db.Tbl_PhanCong_H.Find(ID_PhanCong);
                     if (item != null)
                     {
-                        var path = @"\\192.168.24.108\6s";
+                        var path = @"\\192.168.24.108\6s_Pro";
                         var file = Path.Combine(path, item.Duongluu);
                         file = Path.GetFullPath(file);
                         if (file.StartsWith(path) && System.IO.File.Exists(file))
@@ -889,7 +889,7 @@ namespace _6S.Controllers
                 {
                     var item = db.Tbl_PhanCong_H.Where(x => x.ID_PhanCong == ID_PhanCong).FirstOrDefault();
                     // Đường dẫn đến tệp PDF trên máy chủ mạng
-                    string filePath = @"\\192.168.24.108\6s\" + item.Duongluu;
+                    string filePath = @"\\192.168.24.108\6s_Pro\" + item.Duongluu;
                     if (System.IO.File.Exists(filePath))
                     {
                         // Đọc tệp thành một mảng byte
@@ -1267,7 +1267,7 @@ namespace _6S.Controllers
                                 byte[] pdfBytes = memoryStream.ToArray();
                                 // Lưu tệp PDF xuống đĩa
                                 fileName = "Lich_lam_viec_6S_thang_" + formattedDate + "_" + ID_PhanCong + "_" + Session["Username"]?.ToString() + ".pdf";
-                                filePath = Path.Combine("\\\\192.168.24.108\\6s", fileName);
+                                filePath = Path.Combine("\\\\192.168.24.108\\6s_Pro", fileName);
                                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                                 {
                                     fileStream.Write(pdfBytes, 0, pdfBytes.Length);
