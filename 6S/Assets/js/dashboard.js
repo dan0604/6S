@@ -5,7 +5,7 @@ const exportDropdown = document.querySelector('.export-dropdown');
 const reportContainerone = document.querySelector('.report-container-one');
 const reportContainertwo = document.querySelector('.report-container-two');
 
-AnotherThangNamElement.addEventListener('change', function () {
+AnotherThangNamElement?.addEventListener('change', function () {
     selectedValue = this.value;
     const splitValue = selectedValue.split('-');
     //console.log(selectedValue);

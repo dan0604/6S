@@ -102,78 +102,89 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        @using (Html.BeginForm("Add_PhongBan", "PhongBan", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            @Html.ValidationSummary(true)
-                            @Html.AntiForgeryToken()
-                            <section class="content">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="card card-primary">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Thông tin chính</h3>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card card-primary">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Thông tin chính</h3>
 
-                                                <div class="card-tools">
-                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                        <i class="fas fa-minus"></i>
-                                                    </button>
-                                                </div>
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
                                             </div>
-                                            <div class="card-body">
-                                                <div class="form-group">
-                                                    <label for="inputName">Mã phòng ban</label>
-                                                    <input type="text" id="ID_PhongBan" required="" name="ID_PhongBan" class="form-control">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputName">Tên phòng ban</label>
-                                                    <input type="text" id="TenPhongBan" required="" name="TenPhongBan" class="form-control">
-                                                </div>
-                                            </div>
-                                            <!-- /.card-body -->
                                         </div>
-                                        <!-- /.card -->
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="card card-secondary">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Thời gian hiệu lực và trạng thái</h3>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="inputName">Mã phòng ban</label>
+                                                <input type="text" id="ID_PhongBan" required="" name="ID_PhongBan" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputName">Tên phòng ban</label>
+                                                <input type="text" id="TenPhongBan" required="" name="TenPhongBan" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputStatus">Khối</label>
+                                                @{
+                                                    _6S.Context.Model_6S db = new _6S.Context.Model_6S();
+                                                    var Khoi = db.Tbl_Khoi.ToList();
+                                                }
+                                                <select name="Ma_Khoi" id="Ma_Khoi" class="form-control select2bs4" required="">
+                                                    @foreach (var item in Khoi)
+                                                    {
+                                                        <option value="@item.Ma_Khoi">
+                                                            @item.TenKhoi
+                                                        </option>
+                                                    }
+                                                </select>
+                                            </div>
 
-                                                <div class="card-tools">
-                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                        <i class="fas fa-minus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="form-group">
-                                                    <label for="inputName">Từ ngày</label>
-                                                    <input class="form-control" type="datetime-local" id="datetimepicker" name="TuNgay" placeholder="DD/MM/YYYY - HH:mm" title="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))" size="20" autocomplete="off" value="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputName">Đến ngày</label>
-                                                    <input class="form-control" type="datetime-local" id="datetimepicker" name="DenNgay" placeholder="DD/MM/YYYY - HH:mm" title="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))" size="20" autocomplete="off" value="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputStatus">Chọn trạng thái</label>
-                                                    <select name="Status" class="form-control select2bs4" runat="server">
-                                                        <option value="0">Không sử dụng</option>
-                                                        <option value="1">Đang sử dụng</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <!-- /.card-body -->
                                         </div>
-                                        <!-- /.card -->
+                                        <!-- /.card-body -->
                                     </div>
+                                    <!-- /.card -->
                                 </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <a href="/PhongBan/Index_PhongBan" class="btn btn-outline-secondary"><i class='fas fa-ban'></i>Hủy</a>
-                                        <button type="submit" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                                <div class="col-md-6">
+                                    <div class="card card-secondary">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Thời gian hiệu lực và trạng thái</h3>
+
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="inputName">Từ ngày</label>
+                                                <input class="form-control" type="datetime-local" id="datetimepickerTuNgay" name="TuNgay" placeholder="DD/MM/YYYY - HH:mm" title="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))" size="20" autocomplete="off" value="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputName">Đến ngày</label>
+                                                <input class="form-control" type="datetime-local" id="datetimepickerDenNgay" name="DenNgay" placeholder="DD/MM/YYYY - HH:mm" title="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))" size="20" autocomplete="off" value="@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputStatus">Chọn trạng thái</label>
+                                                <select name="Status" id="Status" class="form-control select2bs4" runat="server">
+                                                    <option value="0">Không sử dụng</option>
+                                                    <option value="1">Đang sử dụng</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
                                     </div>
+                                    <!-- /.card -->
                                 </div>
-                            </section> <!-- /.content -->
-                        }
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a href="/PhongBan/Index_PhongBan" class="btn btn-outline-secondary"><i class='fas fa-ban'></i>Hủy</a>
+                                    <button type="button" onclick="addEmployee()" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
@@ -243,7 +254,6 @@
                                     }
                                 </select>
                             </div>
-
                             <div class="form-group">
                                 <label for="editStatus">Status</label>
                                 <select id="editStatus" class="form-control select2bs4">
@@ -255,7 +265,7 @@
                     </div>
                     <div class="modal-footer">
                         @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="btnSave" class="btn btn-primary">Save changes</button>*@
+                            <button type="button" id="btnSave" class="btn btn-primary">Save changes</button>*@
                         <button type="button" id="btnCancel" class="btn btn-outline-secondary" data-dismiss="modal"><i class='fas fa-ban'></i>Hủy</button>
                         <button type="button" id="btnSave" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
                     </div>
@@ -281,6 +291,55 @@
                 $('#myModalAdd').modal('hide');
             });
         });
+    </script>
+    <!--Thêm-->
+    <script>
+        function addEmployee() {
+            var ID_PhongBan = document.getElementById("ID_PhongBan").value;
+            var TenPhongBan = document.getElementById("TenPhongBan").value;
+            var Ma_Khoi = document.getElementById("Ma_Khoi").value;
+            var datetimepickerTuNgay = document.getElementById("datetimepickerTuNgay").value;
+            var datetimepickerDenNgay = document.getElementById("datetimepickerDenNgay").value;
+            var Status = document.getElementById("Status").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/PhongBan/Add_PhongBan", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đã tạo phòng ban 6S thành công',
+                                text: response.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    setTimeout(function () {
+                                        window.location.href = response.redirectUrl;
+                                    }, 2000);
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Đã xảy ra lỗi',
+                                text: 'Thêm mới phòng ban thất bại: ' + response.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    setTimeout(function () {
+                                        window.location.href = response.redirectUrl;
+                                    }, 2000);
+                                }
+                            });
+                        }
+                    } else {
+                        console.error('Đã xảy ra lỗi!');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ ID_PhongBan: ID_PhongBan, TenPhongBan: TenPhongBan, Ma_Khoi:Ma_Khoi, TuNgay: datetimepickerTuNgay, DenNgay: datetimepickerDenNgay, Status: Status }));
+        }
     </script>
     <!---Xóa-->
     <script>

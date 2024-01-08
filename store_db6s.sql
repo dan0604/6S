@@ -1,18 +1,15 @@
 ﻿---truy vấn dữ liệu---
-delete from dbo.Tbl_BaoCao_Cham6S_H where Ma_BC =''
-delete from dbo.Tbl_BaoCao_Cham6S_L where Ma_BC =''
-delete Tbl_BaoCao_Cham6S_L where Ma_BC = 'CH202310007'
-update dbo.Tbl_PhanCong_H set Status = '1' , Ngay_Ky =  null, Nguoi_Ky = null where ID_PhanCong = 'PC202312001'
-update dbo.Tbl_PhanCong_L set Status = '1' where ID_PhanCong = 'PC202312001'
-select * from dbo.Tbl_PhongBan
-select * from dbo.Tbl_PhanCong_H
-select * from dbo.Tbl_PhanCong_L where ID_PhanCong = 'PC202312002' and Status = 0
+select * from dbo.Tbl_BaoCao_Cham6S_H
+select * from dbo.Tbl_MoTaNhomQuyen
+select * from dbo.Tbl_User
+update  dbo.Tbl_MoTaNhomQuyen set Quyen ='PC,DPC,CR,BC,Download' where ID_NhomQuyen ='3200'
+select * from dbo.Tbl_PhanCong_H where ID_PhanCong = 'PC202312002' and Status = 0
 update dbo.Tbl_PhanCong_L set Status = 1 where ID_PhanCong = 'PC202312002' and Username ='thaonhi928@gmail.com' and PhongBan ='PB9' and Status = 0
 select * from dbo.Tbl_PhanCong_L where ID_PhanCong = 'PC202312002' and Username ='thaonhi928@gmail.com' and PhongBan ='PB9' and Status = 1
 TRUNCATE TABLE dbo.Tbl_PhanCong_L
 TRUNCATE TABLE dbo.Tbl_PhanCong_H
 ---gọi store---
-sp_helptext sp_Insert_PhanCong_H
+sp_helptext sp_Update_PhongBan
 ---test---
 select * from PhanCongCham6S where Username = 'hoan.nx@gmail.com' and DAY(GETDATE()) >= DAY(TuNgay) and DAY(GETDATE()) <= DAY(DenNgay)
 update Tbl_PhanCong_H set Status = '2' where ID_PhanCong = 'PC202311001'

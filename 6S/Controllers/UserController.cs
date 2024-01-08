@@ -60,7 +60,7 @@ namespace _6S.Controllers
                             {
                                 new SqlParameter("@Username", SqlDbType.VarChar, 30) { Value = user.Username },
                                 new SqlParameter("@Pass", SqlDbType.VarChar, 50) { Value = md5_Password },
-                                new SqlParameter("@Manv", SqlDbType.VarChar, 50) { Value = user.Manv },
+                                new SqlParameter("@Manv", SqlDbType.VarChar, 20) { Value = user.Manv },
                                 new SqlParameter("@Fullname", SqlDbType.NVarChar, 50) { Value = user.Fullname },
                                 new SqlParameter("@NhomQuyen", SqlDbType.Int) { Value = user.NhomQuyen },
                                 new SqlParameter("@ID_PhongBan", SqlDbType.VarChar, 10) { Value = user.ID_PhongBan },
@@ -68,21 +68,39 @@ namespace _6S.Controllers
                             };
                             db.Database.ExecuteSqlCommand("EXEC sp_Insert_User @Username, @Pass, @Manv, @Fullname, @NhomQuyen, @ID_PhongBan, @Status", parameters_User);
                             logger.Info("Đã tạo tài khoản 6S thành công :" + user.Fullname + "User add: " + Session["Username"]?.ToString());
-                            ViewBag.message = "Đã tạo tài khoản 6S thành công :" + user.Fullname;
-                            return View("Index_user");
+                            var datalist = db.Tbl_User.ToList();
+                            return Json(new
+                            {
+                                UserList = datalist,
+                                success = true,
+                                message = "Đã tạo tài khoản 6S thành công :" + user.Fullname,
+                                redirectUrl = Url.Action("Index_user", "User")
+                            });
                         }
                         catch (Exception ex)
                         {
                             logger.Error("Lỗi: ", ex);
-                            ViewBag.error = "Lỗi :" + ex.Message;
-                            return View("Index_user");
+                            var datalist = db.Tbl_User.ToList();
+                            return Json(new
+                            {
+                                UserList = datalist,
+                                success = false,
+                                message = "Lỗi :" + ex.Message,
+                                redirectUrl = Url.Action("Index_user", "User")
+                            });
                         }
                     }
                     else
                     {
                         logger.Error("Lỗi: " + "ModelState");
-                        ViewBag.error = "Tham số chưa hợp lệ";
-                        return View("Index_user");
+                        var datalist = db.Tbl_User.ToList();
+                        return Json(new
+                        {
+                            UserList = datalist,
+                            success = false,
+                            message = "Tham số chưa hợp lệ",
+                            redirectUrl = Url.Action("Index_user", "User")
+                        });
                     }
                 }
                 else

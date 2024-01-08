@@ -14,6 +14,7 @@ namespace _6S.Controllers
     public class DataApiController : Controller
     {
         Model_6S db = new Model_6S();
+        Share_All share_All = new Share_All();
         private ILog logger = LogManager.GetLogger(typeof(HomeController));
         [HttpGet]
         public JsonResult Get_PhongBanUsers_From_Khoi(string maKhoi)
@@ -21,8 +22,7 @@ namespace _6S.Controllers
             try
             {
                 string NhomQuyen = Session["NhomQuyen"]?.ToString();
-                byte[] maKhoiBytes = Convert.FromBase64String(maKhoi);
-                string decodedmaKhoi = Encoding.UTF8.GetString(maKhoiBytes);
+                string decodedmaKhoi = share_All.DecodeBase64String(maKhoi);
                 var phongBanList = (from phongBan in db.Tbl_PhongBan
                                     where phongBan.Ma_Khoi == decodedmaKhoi && phongBan.ID_PhongBan != "PB0"
                                     select new

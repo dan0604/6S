@@ -110,106 +110,101 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        @using (Html.BeginForm("Add_user", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            @Html.ValidationSummary(true)
-                            @Html.AntiForgeryToken()
-                            <section class="content">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="card card-primary">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Thông tin tài khoản</h3>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card card-primary">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Thông tin tài khoản</h3>
 
-                                                <div class="card-tools">
-                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                        <i class="fas fa-minus"></i>
-                                                    </button>
-                                                </div>
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
                                             </div>
-                                            <div class="card-body">
-                                                <div class="form-group">
-                                                    <label for="Username">Username</label>
-                                                    <input type="email" id="Username" required="" name="Username" class="form-control"
-                                                           pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)([a-zA-Z0-9._%+-]+[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$" title="Vui lòng bao gồm ít nhất 1 ký tự viết hoa, 1 ký tự viết thường và 1 số."
-                                                           oninvalid="this.setCustomValidity('Vui lòng nhập Username đúng định dạng example@example.com')"
-                                                           oninput="setCustomValidity('')" autocomplete="on" aria-required="true" placeholder="name@example.com">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputName">Mật khẩu</label>
-                                                    <input type="password" id="matkhau" required="" name="Pass" class="form-control">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputName">Mã nhân viên</label>
-                                                    <input type="text" id="Manv" required="" name="Manv" class="form-control">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputName">Họ và tên</label>
-                                                    <input type="text" id="Fullname" required="" name="Fullname" class="form-control">
-                                                </div>
-                                            </div>
-                                            <!-- /.card-body -->
                                         </div>
-                                        <!-- /.card -->
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="card card-secondary">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Chức năng tài khoản</h3>
-
-                                                <div class="card-tools">
-                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                        <i class="fas fa-minus"></i>
-                                                    </button>
-                                                </div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="Username">Username</label>
+                                                <input type="email" id="Username" required="" name="Username" class="form-control"
+                                                       pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)([a-zA-Z0-9._%+-]+[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$" title="Vui lòng bao gồm ít nhất 1 ký tự viết hoa, 1 ký tự viết thường và 1 số."
+                                                       oninvalid="this.setCustomValidity('Vui lòng nhập Username đúng định dạng example@example.com')"
+                                                       oninput="setCustomValidity('')" autocomplete="on" aria-required="true" placeholder="name@example.com">
                                             </div>
-                                            <div class="card-body">
-                                                <div class="form-group">
-                                                    <label for="inputStatus">Chọn trạng thái</label>
-                                                    <select name="Status" class="form-control select2bs4" required="" runat="server">
-                                                        <option value="0">Không sử dụng</option>
-                                                        <option value="1">Đang sử dụng</option>
+                                            <div class="form-group">
+                                                <label for="inputName">Mật khẩu</label>
+                                                <input type="password" id="matkhau" required="" name="Pass" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputName">Mã nhân viên</label>
+                                                <input type="text" id="Manv" required="" name="Manv" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputName">Họ và tên</label>
+                                                <input type="text" id="Fullname" required="" name="Fullname" class="form-control">
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                    <!-- /.card -->
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card card-secondary">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Chức năng tài khoản</h3>
+
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="inputStatus">Chọn trạng thái</label>
+                                                <select name="Status" id="Status" class="form-control select2bs4" required="" runat="server">
+                                                    <option value="0">Không sử dụng</option>
+                                                    <option value="1">Đang sử dụng</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputStatus">Chọn phòng ban </label>
+                                                @{
+                                                    _6S.Context.Model_6S db = new _6S.Context.Model_6S();
+                                                    var PhongBan_Add = db.Tbl_PhongBan.Where(x => x.Status == 1).ToList();
+                                                    <select name="ID_PhongBan" id="ID_PhongBan" class="form-control select2bs4" required="" runat="server">
+                                                        @foreach (var item in PhongBan_Add)
+                                                        {
+                                                            <option value="@item.ID_PhongBan">@item.TenPhongBan</option>
+                                                        }
                                                     </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputStatus">Chọn phòng ban </label>
-                                                    @{
-                                                        _6S.Context.Model_6S db = new _6S.Context.Model_6S();
-                                                        var PhongBan_Add = db.Tbl_PhongBan.Where(x =>x.Status == 1).ToList();
-                                                        <select name="ID_PhongBan" class="form-control select2bs4" required="" runat="server">
-                                                            @foreach (var item in PhongBan_Add)
-                                                            {
-                                                                <option value="@item.ID_PhongBan">@item.TenPhongBan</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputStatus">Chọn quyền tài khoản</label>
-                                                    @{
-                                                        var NhomQuyen_Add = db.Tbl_MoTaNhomQuyen.Where(x => x.Status == 1).ToList();
-                                                        <select name="NhomQuyen" class="form-control select2bs4" required="" runat="server">
-                                                            @foreach (var item in NhomQuyen_Add)
-                                                            {
-                                                                <option value="@item.ID_NhomQuyen">@item.TenQuyen</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                </div>
+                                                }
                                             </div>
-                                            <!-- /.card-body -->
+                                            <div class="form-group">
+                                                <label for="inputStatus">Chọn quyền tài khoản</label>
+                                                @{
+                                                    var NhomQuyen_Add = db.Tbl_MoTaNhomQuyen.Where(x => x.Status == 1).ToList();
+                                                    <select name="NhomQuyen" id="NhomQuyen" class="form-control select2bs4" required="" runat="server">
+                                                        @foreach (var item in NhomQuyen_Add)
+                                                        {
+                                                            <option value="@item.ID_NhomQuyen">@item.TenQuyen</option>
+                                                        }
+                                                    </select>
+                                                }
+                                            </div>
                                         </div>
-                                        <!-- /.card -->
+                                        <!-- /.card-body -->
                                     </div>
+                                    <!-- /.card -->
                                 </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <a href="/User/Index_user" class="btn btn-outline-secondary"><i class='fas fa-ban'></i>Hủy</a>
-                                        <button type="submit" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a href="/User/Index_user" class="btn btn-outline-secondary"><i class='fas fa-ban'></i>Hủy</a>
+                                    <button type="button" onclick="addEmployee()" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
                                 </div>
-                            </section> <!-- /.content -->
-                        }
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
@@ -220,12 +215,6 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @*@{
-                                var firstUser = Model.FirstOrDefault();
-                                var fullname = (firstUser != null) ? firstUser.Fullname : null;
-                                var ID_PhongBan = (firstUser != null) ? firstUser.ID_PhongBan : null;
-                                var NhomQuyen = (firstUser != null) ? firstUser.NhomQuyen : null;
-                            }*@
                         @{
                             string fullname = null;
                             string ID_PhongBan = null;
@@ -244,7 +233,7 @@
                                 }
                             }
                         }
-                        <h5 class="modal-title" ></h5>
+                        <h5 class="modal-title"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -363,6 +352,49 @@
             });
         });
     </script>
+    <script>
+        function addEmployee() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/User/Add_user", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đã tạo Nhân viên cải tiến 6S thành công',
+                                text: response.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    setTimeout(function () {
+                                        window.location.href = response.redirectUrl;
+                                    }, 2000);
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Đã xảy ra lỗi',
+                                text: 'Thêm mới nhân viên thất bại: ' + response.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    setTimeout(function () {
+                                        window.location.href = response.redirectUrl;
+                                    }, 2000);
+                                }
+                            });
+                        }
+                    } else {
+                        console.error('Đã xảy ra lỗi!');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ Username: Username, Pass: matkhau, Manv: Manv, Fullname: Fullname, NhomQuyen: NhomQuyen, ID_PhongBan: ID_PhongBan, Status: Status }));
+        }
+    </script>
+
     <!---Xóa-->
     <script>
         $(document).ready(function () {
@@ -568,11 +600,7 @@
                 }
             });
         });
-        $('#btnCancel').click(function () {
-            // Xử lý khi nút Hủy được nhấn
-            $('#editModal').modal('hide');
-        });
-        $('.close').on('click', function (e) {
+        $('#btnCancel, .close').on('click', function (e) {
             $('#editModal').modal('hide');
         });
     </script>

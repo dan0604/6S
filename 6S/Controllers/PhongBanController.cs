@@ -18,6 +18,7 @@ namespace _6S.Controllers
         Model_6S db = new Model_6S();
         Share_All share_All = new Share_All();
         private ILog logger = LogManager.GetLogger(typeof(PhongBanController));
+        [HttpGet]
         public ActionResult Index_PhongBan()
         {
             var checkAccount = share_All.CheckAccount(Session["Username"]?.ToString());
@@ -42,7 +43,7 @@ namespace _6S.Controllers
             }
         }
         [HttpPost]
-        public ActionResult Add_PhongBan(Tbl_PhongBan PhongBan, HttpPostedFile filesPhongBan)
+        public ActionResult Add_PhongBan(Tbl_PhongBan PhongBan)
         {
             var checkAccount = share_All.CheckAccount(Session["Username"]?.ToString());
             if (checkAccount == true)
@@ -56,28 +57,47 @@ namespace _6S.Controllers
                             SqlParameter[] parameters_PhongBan = new SqlParameter[]
                                 {
                                 new SqlParameter("@ID_PhongBan", SqlDbType.VarChar, 10) { Value = PhongBan.ID_PhongBan },
-                                new SqlParameter("@TenPhongBan", SqlDbType.VarChar, 20) { Value = PhongBan.TenPhongBan }, // Sử dụng rowCount
+                                new SqlParameter("@TenPhongBan", SqlDbType.NVarChar, 50) { Value = PhongBan.TenPhongBan },
                                 new SqlParameter("@TuNgay", SqlDbType.Date) { Value = PhongBan.TuNgay },
                                 new SqlParameter("@DenNgay", SqlDbType.Date) { Value = PhongBan.DenNgay },
                                 new SqlParameter("@Status", SqlDbType.Int) { Value = PhongBan.Status },
+                                new SqlParameter("@Ma_Khoi", SqlDbType.VarChar, 10) { Value = PhongBan.Ma_Khoi }
                                 };
-                            db.Database.ExecuteSqlCommand("EXEC sp_Insert_PhongBan @ID_PhongBan, @TenPhongBan, @TuNgay, @DenNgay, @Status", parameters_PhongBan);
+                            db.Database.ExecuteSqlCommand("EXEC sp_Insert_PhongBan @ID_PhongBan, @TenPhongBan, @TuNgay, @DenNgay, @Status, @Ma_Khoi", parameters_PhongBan);
                             logger.Info("Đã tạo phòng ban 6S thành công :" + PhongBan.TenPhongBan + "User add: " + Session["Username"]?.ToString());
-                            ViewBag.message = "Đã tạo phòng ban 6S thành công :" + PhongBan.TenPhongBan;
-                            return View("Index_PhongBan");
+                            var datalist = db.Tbl_PhongBan.ToList();
+                            return Json(new
+                            {
+                                PhongBanList = datalist,
+                                success = true,
+                                message = "Đã tạo phòng ban 6S thành công :" + PhongBan.TenPhongBan,
+                                redirectUrl = Url.Action("Index_PhongBan", "PhongBan")
+                            });
                         }
                         catch (Exception ex)
                         {
                             logger.Error("Lỗi: ", ex);
-                            ViewBag.error = "Lỗi: " + ex.Message;
-                            return View("Index_PhongBan");
+                            var datalist = db.Tbl_PhongBan.ToList();
+                            return Json(new
+                            {
+                                PhongBanList = datalist,
+                                success = false,
+                                message = "Lỗi: " + ex.Message,
+                                redirectUrl = Url.Action("Index_PhongBan", "PhongBan")
+                            });
                         }
                     }
                     else
                     {
                         logger.Error("Lỗi: ModelState");
-                        ViewBag.error = "Tham số không hợp lệ";
-                        return View("Index_PhongBan");
+                        var datalist = db.Tbl_PhongBan.ToList();
+                        return Json(new
+                        {
+                            PhongBanList = datalist,
+                            success = false,
+                            message = "Tham số không hợp lệ",
+                            redirectUrl = Url.Action("Index_PhongBan", "PhongBan")
+                        });
                     }
                 }
                 else
@@ -150,7 +170,7 @@ namespace _6S.Controllers
                             SqlParameter[] parameters_PhongBan = new SqlParameter[]
                                  {
                                 new SqlParameter("@ID_PhongBan", SqlDbType.VarChar, 10) { Value = phongban.ID_PhongBan },
-                                new SqlParameter("@TenPhongBan", SqlDbType.VarChar, 20) { Value = phongban.TenPhongBan }, // Sử dụng rowCount
+                                new SqlParameter("@TenPhongBan", SqlDbType.NVarChar, 50) { Value = phongban.TenPhongBan }, // Sử dụng rowCount
                                 new SqlParameter("@TuNgay", SqlDbType.Date) { Value = phongban.TuNgay },
                                 new SqlParameter("@DenNgay", SqlDbType.Date) { Value = phongban.DenNgay },
                                 new SqlParameter("@Status", SqlDbType.Int) { Value = phongban.Status },

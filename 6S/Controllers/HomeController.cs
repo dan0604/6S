@@ -420,7 +420,9 @@ namespace _6S.Controllers
                             byte[] pdfBytes = memoryStream.ToArray();
                             // Lưu tệp PDF xuống đĩa
                             fileName = "Template_bao_cao_6S_thang" + formattedDate_MM + "_" + Ma_BC + "_" + username + ".pdf";
-                            filePath = Path.Combine("\\\\192.168.24.108\\6s", fileName);
+                            var isCatalogProvided = share_All.IsInitialCatalogProvided();
+                            string path = $@"\\192.168.24.108\{isCatalogProvided ?? ""}";
+                            filePath = Path.Combine(path, fileName);
                             using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                             {
                                 fileStream.Write(pdfBytes, 0, pdfBytes.Length);
@@ -561,7 +563,8 @@ namespace _6S.Controllers
                     var item = db.Tbl_BaoCao_Cham6S_H.Find(Ma_BC);
                     if (item != null)
                     {
-                        var path = @"\\192.168.24.108\6s";
+                        var isCatalogProvided = share_All.IsInitialCatalogProvided();
+                        string path = $@"\\192.168.24.108\{isCatalogProvided ?? ""}";
                         var file = Path.Combine(path, item.Duongluu);
                         file = Path.GetFullPath(file);
                         if (file.StartsWith(path) && System.IO.File.Exists(file))
@@ -607,7 +610,8 @@ namespace _6S.Controllers
                 {
                     var item = db.Tbl_BaoCao_Cham6S_H.Where(x => x.Ma_BC == Ma_BC).FirstOrDefault();
                     // Đường dẫn đến tệp PDF trên máy chủ mạng
-                    string filePath = @"\\192.168.24.108\6s\" + item.Duongluu;
+                    var isCatalogProvided = share_All.IsInitialCatalogProvided();
+                    string filePath = $@"\\192.168.24.108\{isCatalogProvided ?? ""}\{item.Duongluu}";
                     if (System.IO.File.Exists(filePath))
                     {
                         // Đọc tệp thành một mảng byte
