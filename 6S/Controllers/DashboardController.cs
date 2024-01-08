@@ -44,8 +44,7 @@ namespace _6S.Controllers
                 List<BC6SView> List_BC6SView = new List<BC6SView>();
                 try
                 {
-                    byte[] data = Convert.FromBase64String(ThangNam);
-                    string jsonData = Encoding.UTF8.GetString(data);
+                    string jsonData = share_All.DecodeBase64String(ThangNam);
                     string inputThangNam = jsonData;
                     string outputThangNam = jsonData.Replace("-", ""); // chuỗi liền 202310
                     DateTime dateTime = DateTime.ParseExact(inputThangNam, "yyyy-MM", null);
@@ -55,9 +54,9 @@ namespace _6S.Controllers
                         SqlParameter[] parameters_BC6SView = new SqlParameter[]
                         {
                             new SqlParameter("@thangnam", SqlDbType.VarChar, 10){ Value = outputThangNam},
-                            new SqlParameter("@thangnam1", SqlDbType.VarChar, 10){ Value = outputString},
+                            new SqlParameter("@thangnam2", SqlDbType.VarChar, 10){ Value = outputString},
                         };
-                        List_BC6SView = db.Database.SqlQuery<BC6SView>("EXEC dbo.proc_BaoCaoCham6S @thangnam, @thangnam1", parameters_BC6SView).ToList();
+                        List_BC6SView = db.Database.SqlQuery<BC6SView>("EXEC dbo.proc_BaoCaoCham6S @thangnam, @thangnam2", parameters_BC6SView).ToList();
                     }
                     if(List_BC6SView.Count > 0)
                     {

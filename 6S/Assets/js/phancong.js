@@ -634,19 +634,19 @@ function btnLuuTamThoiGian_Edit() {
             });
             return;
         }
-        cellsGio[2].textContent = gio;
-        cellsNgay[2].textContent = displayDate;
+        cellsGio[1].textContent = gio;
+        cellsNgay[1].textContent = displayDate;
     }
     // Dựa vào giá trị của trường Loại báo cáo để quyết định cập nhật ô nào trong bảng
     switch (loaiBaoCao_Edit) {
         case 'HC': // Chấm hiệu chỉnh
-            cellsGio[4].textContent = gio;
-            cellsNgay[4].textContent = displayDate;
+            cellsGio[3].textContent = gio;
+            cellsNgay[3].textContent = displayDate;
             chungTuTonTai = true;
             break;
         case 'CH': // Chấm chéo
-            cellsGio[3].textContent = gio;
-            cellsNgay[3].textContent = displayDate;
+            cellsGio[2].textContent = gio;
+            cellsNgay[2].textContent = displayDate;
             chungTuTonTai = true;
             break;
         case 'NB': // Chấm nội bộ
@@ -673,11 +673,11 @@ function luuTam_Edit(tableId_Edit) {
     var tbody = table.find('tbody');
     // Tạo hàng mới và thêm ô vào hàng
     var newRow = $('<tr>');
-    newRow.append($('<td>').text(phongBanText_Edit).data('value', phongBanValue_Edit));
-    newRow.append($('<td>').text(thanhVienText_Edit).data('value', thanhVienValue_Edit));
+    newRow.append($('<td>').text(phongBanText_Edit).attr('value-phongban', phongBanValue_Edit));
+    newRow.append($('<td>').text(thanhVienText_Edit).attr('value-username', thanhVienValue_Edit));
     // Đối với Khối Sản Xuất, thêm cột "Tổ Cải Tiến"
     if (khoiText_Edit === 'Khối Sản Xuất') {
-        newRow.append($('<td>').text(toCaiTienText_Edit).data('value', toCaiTienValue_Edit));
+        newRow.append($('<td>').text(toCaiTienText_Edit).attr('nvcaitien', toCaiTienValue_Edit));
     }
     // Tạo nút Xóa Dòng và thêm vào hàng mới
     var deleteButton = $('<button>').text('Xóa').addClass('btn btn-outline-danger delete-row');
@@ -686,10 +686,10 @@ function luuTam_Edit(tableId_Edit) {
     tbody.append(newRow);
 
     //// Đây là giá trị từ các dropdown để gửi đi
-    console.table("Giá trị của Khối: " + khoiValue_Edit, khoiText_Edit);
-    console.table("Giá trị của Phòng Ban: " + phongBanValue_Edit, phongBanText_Edit);
-    console.table("Giá trị của Thành viên Ban ĐH: " + thanhVienValue_Edit, thanhVienText_Edit);
-    console.table("Giá trị của Tổ Cải Tiến: " + toCaiTienValue_Edit, toCaiTienText_Edit);
+    //console.table("Giá trị của Khối: " + khoiValue_Edit, khoiText_Edit);
+    //console.table("Giá trị của Phòng Ban: " + phongBanValue_Edit, phongBanText_Edit);
+    //console.table("Giá trị của Thành viên Ban ĐH: " + thanhVienValue_Edit, thanhVienText_Edit);
+    //console.table("Giá trị của Tổ Cải Tiến: " + toCaiTienValue_Edit, toCaiTienText_Edit);
 }
 
 // Sự kiện click cho nút "Lưu tạm"
@@ -712,51 +712,39 @@ $('#previewTable_vanphong_Edit tbody').on('click', '.delete-row', function () {
 });
 ///gửi dữ liệu đi
 function gatherSanXuatData_Edit() {
+    var table = document.getElementById("previewTable_sanxuat_Edit");
     var sanXuatData_Edit = [];
+    for (var i = 0; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var rowData = {};
 
-    $('#previewTable_sanxuat_Edit tbody tr').each(function () {
-        var rowData_Edit = [];
-
-        $(this).find('td').each(function () {
-            var cellValue_Edit = $(this).data('value'); // Lấy giá trị từ thuộc tính data-value của ô
-            var cellText_Edit = $(this).text(); // Lấy văn bản từ ô
-
-            var cellData_Edit = {
-                value: cellValue_Edit,
-                text: cellText_Edit
-            };
-
-            rowData_Edit.push(cellData_Edit);
-        });
-
-        sanXuatData_Edit.push(rowData_Edit);
-    });
-
-    console.log('Dữ liệu sản xuất:', sanXuatData_Edit);
+        var cells = row.getElementsByTagName("td");
+        if (cells.length > 0) {
+            rowData.valuePhongBan = cells[0].getAttribute('value-phongban');
+            rowData.valueUsername = cells[1].getAttribute('value-username');
+            rowData.toCaiTienValue = cells[2].getAttribute('nvcaitien');
+            sanXuatData_Edit.push(rowData);
+        }
+    }
+/*    console.table('sx', sanXuatData_Edit);*/
     return sanXuatData_Edit;
 }
 
 function gatherVanPhongData_Edit() {
+    var table = document.getElementById("previewTable_vanphong_Edit");
     var vanPhongData_Edit = [];
-    $('#previewTable_vanphong_Edit tbody tr').each(function () {
-        var rowData_Edit = [];
-        $(this).find('td').each(function (index) {
-            var cellValue_Edit = $(this).data('value'); // Lấy giá trị từ thuộc tính data-value của ô
-            var cellText_Edit = $(this).text(); // Lấy văn bản từ ô
+    for (var i = 0; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var rowData = {};
 
-            // Lưu cả giá trị và văn bản vào mảng
-            var cellData_Edit = {
-                value: cellValue_Edit,
-                text: cellText_Edit
-            };
-
-            if (index !== 2) {
-                rowData_Edit.push(cellData_Edit);
-            }
-        });
-        vanPhongData_Edit.push(rowData_Edit);
-    });
-    console.log('dữ vp', vanPhongData_Edit);
+        var cells = row.getElementsByTagName("td");
+        if (cells.length > 0) {
+            rowData.valuePhongBan = cells[0].getAttribute('value-phongban');
+            rowData.valueUsername = cells[1].getAttribute('value-username');
+            vanPhongData_Edit.push(rowData);
+        }
+    }
+/*    console.table('vp', vanPhongData_Edit);*/
     return vanPhongData_Edit;
 }
 
@@ -772,7 +760,7 @@ function gatherThoiGianData_Edit() {
     $('#previewTable_thoigian_Edit tbody tr:nth-child(2) td').each(function () {
         ngayData_Edit.push($(this).text());
     });
-    console.table('gio ngay', gioData_Edit, ngayData_Edit);
+/*    console.table('gio ngay', gioData_Edit, ngayData_Edit);*/
     return {
         gioData_Edit: gioData_Edit,
         ngayData_Edit: ngayData_Edit
@@ -780,30 +768,28 @@ function gatherThoiGianData_Edit() {
 }
 $('#btnGuiDuLieu_Edit').on('click', function () {
     $('#loading').show();
+    var formattedDateDisplayText = document.getElementById("selectedThangNam_Edit").textContent.split("Mã phân công: ")[1].trim();
     var sanXuatData_Edit = gatherSanXuatData_Edit();
     var vanPhongData_Edit = gatherVanPhongData_Edit();
     var thoigianData_Edit = gatherThoiGianData_Edit();
-    console.table('dữ all 1',sanXuatData_Edit, vanPhongData_Edit, thoigianData_Edit);
+    console.log('Data_All',formattedDateDisplayText, sanXuatData_Edit, vanPhongData_Edit, thoigianData_Edit);
     var dataToSend_Edit = {
         sanXuatData_Edit: sanXuatData_Edit,
         vanPhongData_Edit: vanPhongData_Edit,
-        thoigianData_Edit: thoigianData_Edit
+        thoigianData_Edit: thoigianData_Edit,
+        ID_PhanCong: formattedDateDisplayText
     };
-
     // Chuyển đổi dữ liệu JSON thành chuỗi JSON
     var jsonData_Edit = JSON.stringify(dataToSend_Edit);
-
     // Chuyển đổi chuỗi JSON thành dạng byte array
     var encoder_Edit = new TextEncoder();
     var jsonDataUint8_Edit = encoder_Edit.encode(jsonData_Edit);
-
     // Mã hóa dạng byte array thành Base64
     var encodedData_Edit = btoa(String.fromCharCode.apply(null, jsonDataUint8_Edit));
-
     // Tạo một đối tượng FormData và thêm dữ liệu Base64 vào đó
     var formData_Edit = new FormData();
     formData_Edit.append("json", encodedData_Edit);
-
+    //gửi dữ liệu đi
     $.ajax({
         url: 'Edit_PhanCong',
         method: 'POST',

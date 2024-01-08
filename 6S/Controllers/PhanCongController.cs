@@ -107,9 +107,7 @@ namespace _6S.Controllers
                 {
                     // Lấy chuỗi JSON từ FormData
                     string encodedJson = Request.Form["json"];
-                    // Giải mã chuỗi JSON từ Base64
-                    byte[] data = Convert.FromBase64String(encodedJson);
-                    string jsonData = Encoding.UTF8.GetString(data);
+                    string jsonData = share_All.DecodeBase64String(encodedJson);
                     // Khởi tạo ba DataTables tương ứng
                     DataTable ThoiGian = new DataTable("ThoiGian");
                     DataTable KhoiSanXuat = new DataTable("KhoiSanXuat");
@@ -596,136 +594,212 @@ namespace _6S.Controllers
             }
         }
         [HttpGet]
-        public ActionResult Edit_PhanCong(string ID_PhanCong)
+        public ActionResult Edit_PhanCong(string MaPhanCong)
         {
             var checkAccount = share_All.CheckAccount(Session["Username"]?.ToString());
             if (checkAccount == true)
             {
                 try
                 {
+                    string ID_PhanCong = share_All.DecodeBase64String(MaPhanCong);
                     var dataPhancong_H = db.Tbl_PhanCong_H.FirstOrDefault(x => x.ID_PhanCong == ID_PhanCong && x.Status == 1);
-                    var dataUser_Get_Nguoitao_Phancong_H = db.Tbl_User.Where(x => x.Username == dataPhancong_H.Nguoi_Tao).FirstOrDefault();
-                    var dataPhancong_L_NB = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong && x.Loai_BC == "NB" && x.Status == 1).ToList();
-                    var dataPhancong_L_CH = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong && x.Loai_BC == "CH" && x.Status == 1).ToList();
-                    var dataPhancong_L_HC = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong && x.Loai_BC == "HC" && x.Status == 1).ToList();
-                    var dataPhancong_L_CH_K1 = dataPhancong_L_CH.Where(x => x.MaKhoi == "K1")
-                        .Select(x => new {ID_PhanCong = x.ID_PhanCong, PhongBan = x.PhongBan, Username = x.Username, NVCaiTien = x.NVCaiTien }).ToList();
-                    var dataPhancong_L_CH_K2 = dataPhancong_L_CH.Where(x => x.MaKhoi == "K2")
-                        .Select(x => new { ID_PhanCong = x.ID_PhanCong, PhongBan = x.PhongBan, Username = x.Username }).ToList();
-                    var dataThangnam = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong && x.Status == 1).ToList();
-
-                    var gioValue_NB = dataPhancong_L_NB.Select(x => x.Gio).FirstOrDefault();
-                    var gioValue_CH = dataPhancong_L_CH.Select(x => x.Gio).FirstOrDefault();
-                    var gioValue_HC = dataPhancong_L_HC.Select(x => x.Gio).FirstOrDefault();
-
-                    var tuNgay_NB = dataPhancong_L_NB.Select(x => x.TuNgay).FirstOrDefault();
-                    var tuNgay_CH = dataPhancong_L_CH.Select(x => x.TuNgay).FirstOrDefault();
-                    var tuNgay_HC = dataPhancong_L_HC.Select(x => x.TuNgay).FirstOrDefault();
-
-                    var denNgay_NB = dataPhancong_L_NB.Select(x => x.DenNgay).FirstOrDefault();
-                    var denNgay_CH = dataPhancong_L_CH.Select(x => x.DenNgay).FirstOrDefault();
-                    var denNgay_HC = dataPhancong_L_HC.Select(x => x.DenNgay).FirstOrDefault();
-
-                    var thoiGian_NB = GetThoiGian(tuNgay_NB, denNgay_NB);
-                    var thoiGian_CH = GetThoiGian(tuNgay_CH, denNgay_CH);
-                    var thoiGian_HC = GetThoiGian(tuNgay_HC, denNgay_HC);
-
-                    var thangNam = dataThangnam.Select(x => x.ThangNam).FirstOrDefault();
-                    DateTime date = DateTime.ParseExact(thangNam, "MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                    string formattedDate = date.ToString("yyyy-MM");
-
-                    string GetThoiGian(DateTime? tuNgay, DateTime? denNgay)
+                    if(dataPhancong_H != null)
                     {
-                        if (tuNgay == denNgay)
+                        var dataUser_Get_Nguoitao_Phancong_H = db.Tbl_User.Where(x => x.Username == dataPhancong_H.Nguoi_Tao).FirstOrDefault();
+                        if(dataUser_Get_Nguoitao_Phancong_H != null)
                         {
-                            return tuNgay?.ToString("dd/MM/yyyy");
+                            var dataPhancong_L_NB = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong && x.Loai_BC == "NB" && x.Status == 1).ToList();
+                            if(dataPhancong_L_NB != null)
+                            {
+                                var dataPhancong_L_CH = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong && x.Loai_BC == "CH" && x.Status == 1).ToList();
+                                if(dataPhancong_L_CH != null)
+                                {
+                                    var dataPhancong_L_HC = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong && x.Loai_BC == "HC" && x.Status == 1).ToList();
+                                    if(dataPhancong_L_HC != null)
+                                    {
+                                        var dataPhancong_L_CH_K1 = dataPhancong_L_CH.Where(x => x.MaKhoi == "K1")
+                                        .Select(x => new { ID_PhanCong = x.ID_PhanCong, PhongBan = x.PhongBan, Username = x.Username, NVCaiTien = x.NVCaiTien }).ToList();
+                                        if(dataPhancong_L_CH_K1 != null)
+                                        {
+                                            var dataPhancong_L_CH_K2 = dataPhancong_L_CH.Where(x => x.MaKhoi == "K2")
+                                            .Select(x => new { ID_PhanCong = x.ID_PhanCong, PhongBan = x.PhongBan, Username = x.Username }).ToList();
+                                            if(dataPhancong_L_CH_K2 != null)
+                                            {
+                                                var dataThangnam = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong && x.Status == 1).ToList();
+                                                if(dataThangnam != null)
+                                                {
+                                                    var gioValue_NB = dataPhancong_L_NB.Select(x => x.Gio).FirstOrDefault();
+                                                    var gioValue_CH = dataPhancong_L_CH.Select(x => x.Gio).FirstOrDefault();
+                                                    var gioValue_HC = dataPhancong_L_HC.Select(x => x.Gio).FirstOrDefault();
+
+                                                    var tuNgay_NB = dataPhancong_L_NB.Select(x => x.TuNgay).FirstOrDefault();
+                                                    var tuNgay_CH = dataPhancong_L_CH.Select(x => x.TuNgay).FirstOrDefault();
+                                                    var tuNgay_HC = dataPhancong_L_HC.Select(x => x.TuNgay).FirstOrDefault();
+
+                                                    var denNgay_NB = dataPhancong_L_NB.Select(x => x.DenNgay).FirstOrDefault();
+                                                    var denNgay_CH = dataPhancong_L_CH.Select(x => x.DenNgay).FirstOrDefault();
+                                                    var denNgay_HC = dataPhancong_L_HC.Select(x => x.DenNgay).FirstOrDefault();
+
+                                                    var thoiGian_NB = GetThoiGian(tuNgay_NB, denNgay_NB);
+                                                    var thoiGian_CH = GetThoiGian(tuNgay_CH, denNgay_CH);
+                                                    var thoiGian_HC = GetThoiGian(tuNgay_HC, denNgay_HC);
+
+                                                    var thangNam = dataThangnam.Select(x => x.ThangNam).FirstOrDefault();
+                                                    DateTime date = DateTime.ParseExact(thangNam, "MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                                                    string formattedDate = date.ToString("yyyy-MM");
+
+                                                    string GetThoiGian(DateTime? tuNgay, DateTime? denNgay)
+                                                    {
+                                                        if (tuNgay == denNgay)
+                                                        {
+                                                            return tuNgay?.ToString("dd/MM/yyyy");
+                                                        }
+                                                        else
+                                                        {
+                                                            DateTime tuNgayDateTime = tuNgay ?? default;
+                                                            DateTime denNgayDateTime = denNgay ?? default;
+                                                            return $"{tuNgayDateTime.Day:00}-{denNgayDateTime.Day:00}/{tuNgayDateTime.Month:00}/{tuNgayDateTime.Year}";
+                                                        }
+                                                    }
+                                                    DataTable ThoiGian = new DataTable("ThoiGian");
+                                                    DataTable KhoiSanXuat = new DataTable("KhoiSanXuat");
+                                                    DataTable KhoiVanPhong = new DataTable("KhoiVanPhong");
+                                                    // Tạo cột DataTable ThoiGian
+                                                    ThoiGian.Columns.Add("6S");
+                                                    ThoiGian.Columns.Add("Chấm nội bộ");
+                                                    ThoiGian.Columns.Add("Chấm chéo");
+                                                    ThoiGian.Columns.Add("Chấm hiệu chỉnh");
+                                                    var gioValueList = new List<string> { "Giờ", gioValue_NB, gioValue_CH, gioValue_HC };
+                                                    var ngayValueList = new List<string> { "Ngày", thoiGian_NB, thoiGian_CH, thoiGian_HC };
+                                                    // Thêm dữ liệu từ gioData vào hàng thứ hai của DataTable
+                                                    DataRow rowGioData = ThoiGian.NewRow();
+                                                    for (int i = 0; i < gioValueList.Count; i++)
+                                                    {
+                                                        rowGioData[i] = gioValueList[i].ToString();
+                                                    }
+                                                    ThoiGian.Rows.Add(rowGioData);
+                                                    // Thêm dữ liệu từ ngayData vào hàng đầu tiên của DataTable
+                                                    DataRow rowNgayData = ThoiGian.NewRow();
+                                                    for (int i = 0; i < ngayValueList.Count; i++)
+                                                    {
+                                                        rowNgayData[i] = ngayValueList[i].ToString();
+                                                    }
+                                                    ThoiGian.Rows.InsertAt(rowNgayData, 1);
+                                                    //Tạo cột DataTable KhoiVanPhong
+                                                    KhoiVanPhong.Columns.Add("valuePhongBan", typeof(string));
+                                                    KhoiVanPhong.Columns.Add("textTenPhongBan", typeof(string));
+                                                    KhoiVanPhong.Columns.Add("valueUsername", typeof(string));
+                                                    KhoiVanPhong.Columns.Add("textUsername", typeof(string));
+                                                    // Thêm dữ liệu từ danh sách vào DataTable
+                                                    foreach (var item in dataPhancong_L_CH_K2)
+                                                    {
+                                                        DataRow row = KhoiVanPhong.NewRow();
+                                                        var dataPhongban = db.Tbl_PhongBan.Where(x => x.ID_PhongBan == item.PhongBan).FirstOrDefault();
+                                                        var dataUser_Get_K2 = db.Tbl_User.Where(x => x.Username == item.Username).FirstOrDefault();
+                                                        row["valuePhongBan"] = item.PhongBan;
+                                                        row["textTenPhongBan"] = dataPhongban.TenPhongBan;
+                                                        row["valueUsername"] = item.Username;
+                                                        row["textUsername"] = dataUser_Get_K2.Fullname;
+                                                        KhoiVanPhong.Rows.Add(row);
+                                                    }
+                                                    // Thêm cột cho DataTable KhoiSanXuat
+                                                    KhoiSanXuat.Columns.Add("valuePhongBan", typeof(string));
+                                                    KhoiSanXuat.Columns.Add("textTenPhongBan", typeof(string));
+                                                    KhoiSanXuat.Columns.Add("valueUsername", typeof(string));
+                                                    KhoiSanXuat.Columns.Add("textUsername", typeof(string));
+                                                    KhoiSanXuat.Columns.Add("textNVCaiTien", typeof(string));
+                                                    KhoiSanXuat.Columns.Add("valueNVCaiTien", typeof(string));
+                                                    foreach (var item in dataPhancong_L_CH_K1)
+                                                    {
+                                                        DataRow row = KhoiSanXuat.NewRow();
+                                                        var dataPhongban = db.Tbl_PhongBan.Where(x => x.ID_PhongBan == item.PhongBan && x.Ma_Khoi == "K1").FirstOrDefault();
+                                                        var dataUser_Get_K1 = db.Tbl_User.Where(x => x.Username == item.Username).FirstOrDefault();
+                                                        row["valuePhongBan"] = item.PhongBan;
+                                                        row["textTenPhongBan"] = dataPhongban.TenPhongBan;
+                                                        row["valueUsername"] = item.Username;
+                                                        row["textUsername"] = dataUser_Get_K1.Fullname;
+                                                        row["textNVCaiTien"] = item.NVCaiTien;
+                                                        row["valueNVCaiTien"] = item.NVCaiTien;
+                                                        KhoiSanXuat.Rows.Add(row);
+                                                    }
+                                                    var result = new
+                                                    {
+                                                        ID_PhanCong = ID_PhanCong,
+                                                        ThangNam = formattedDate,
+                                                        ThoiGian = ThoiGian,
+                                                        KhoiSanXuat = KhoiSanXuat,
+                                                        KhoiVanPhong = KhoiVanPhong
+                                                    };
+                                                    var settings = new JsonSerializerSettings
+                                                    {
+                                                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                                                    };
+                                                    var json = JsonConvert.SerializeObject(result, settings);
+                                                    logger.Info("Sửa Lịch làm  6S thành công :" + json + "User up: " + Session["Username"]?.ToString());
+                                                    return Content(json, "application/json");
+                                                }
+                                                else
+                                                {
+                                                    return Json(new
+                                                    {
+                                                        success = false,
+                                                        message = "Lỗi: Không có giá trị tháng năm trong lịch làm L."
+                                                    }, JsonRequestBehavior.AllowGet);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return Json(new
+                                                {
+                                                    success = false,
+                                                    message = "Lỗi: Không có lịch chấm chéo ở khối văn phòng."
+                                                }, JsonRequestBehavior.AllowGet);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return Json(new
+                                            {
+                                                success = false,
+                                                message = "Lỗi: Không có lịch chấm chéo ở khối sản xuất."
+                                            }, JsonRequestBehavior.AllowGet);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return Json(new
+                                        {
+                                            success = false,
+                                            message = "Lỗi: Không có lịch chấm hiệu chỉnh."
+                                        }, JsonRequestBehavior.AllowGet);
+                                    }
+                                }
+                                else
+                                {
+                                    return Json(new
+                                    {
+                                        success = false,
+                                        message = "Lỗi: Không có lịch chấm chéo."
+                                    }, JsonRequestBehavior.AllowGet);
+                                }
+                            }
+                            else
+                            {
+                                return Json(new
+                                {
+                                    success = false,
+                                    message = "Lỗi: Không có lịch chấm nội bộ."
+                                }, JsonRequestBehavior.AllowGet);
+                            }
                         }
                         else
                         {
-                            DateTime tuNgayDateTime = tuNgay ?? default;
-                            DateTime denNgayDateTime = denNgay ?? default;
-                            return $"{tuNgayDateTime.Day}-{denNgayDateTime.Day}/{tuNgayDateTime.Month}/{tuNgayDateTime.Year}";
+                            return Json(new
+                            {
+                                success = false,
+                                message = "Lỗi: Người tạo lịch làm không tồn tại trong hệ thống."
+                            }, JsonRequestBehavior.AllowGet);
                         }
-                    }
-                    DataTable ThoiGian = new DataTable("ThoiGian");
-                    DataTable KhoiSanXuat = new DataTable("KhoiSanXuat");
-                    DataTable KhoiVanPhong = new DataTable("KhoiVanPhong");
-                    // Tạo cột DataTable ThoiGian
-                    ThoiGian.Columns.Add("6S");
-                    ThoiGian.Columns.Add("Chấm nội bộ");
-                    ThoiGian.Columns.Add("Chấm chéo");
-                    ThoiGian.Columns.Add("Chấm hiệu chỉnh");
-                    var gioValueList = new List<string> {"Giờ", gioValue_NB, gioValue_CH, gioValue_HC };
-                    var ngayValueList = new List<string> {"Ngày", thoiGian_NB, thoiGian_CH, thoiGian_HC };
-                    // Thêm dữ liệu từ gioData vào hàng thứ hai của DataTable
-                    DataRow rowGioData = ThoiGian.NewRow();
-                    for (int i = 0; i < gioValueList.Count; i++)
-                    {
-                        rowGioData[i] = gioValueList[i].ToString();
-                    }
-                    ThoiGian.Rows.Add(rowGioData);
-                    // Thêm dữ liệu từ ngayData vào hàng đầu tiên của DataTable
-                    DataRow rowNgayData = ThoiGian.NewRow();
-                    for (int i = 0; i < ngayValueList.Count; i++)
-                    {
-                        rowNgayData[i] = ngayValueList[i].ToString();
-                    }
-                    ThoiGian.Rows.InsertAt(rowNgayData, 1);
-                    //Tạo cột DataTable KhoiVanPhong
-                    KhoiVanPhong.Columns.Add("valuePhongBan", typeof(string));
-                    KhoiVanPhong.Columns.Add("textTenPhongBan", typeof(string));
-                    KhoiVanPhong.Columns.Add("valueUsername", typeof(string));
-                    KhoiVanPhong.Columns.Add("textUsername", typeof(string));
-                    // Thêm dữ liệu từ danh sách vào DataTable
-                    foreach (var item in dataPhancong_L_CH_K2)
-                    {
-                        DataRow row = KhoiVanPhong.NewRow();
-                        var dataPhongban = db.Tbl_PhongBan.Where(x => x.ID_PhongBan == item.PhongBan).FirstOrDefault();
-                        var dataUser_Get_K2 = db.Tbl_User.Where(x => x.Username == item.Username).FirstOrDefault();
-                        row["valuePhongBan"] = item.PhongBan;
-                        row["textTenPhongBan"] = dataPhongban.TenPhongBan;
-                        row["valueUsername"] = item.Username;
-                        row["textUsername"] = dataUser_Get_K2.Fullname;
-                        KhoiVanPhong.Rows.Add(row);
-                    }
-                    // Thêm cột cho DataTable KhoiSanXuat
-                    KhoiSanXuat.Columns.Add("valuePhongBan", typeof(string));
-                    KhoiSanXuat.Columns.Add("textTenPhongBan", typeof(string));
-                    KhoiSanXuat.Columns.Add("valueUsername", typeof(string));
-                    KhoiSanXuat.Columns.Add("textUsername", typeof(string));
-                    KhoiSanXuat.Columns.Add("textNVCaiTien", typeof(string));
-                    KhoiSanXuat.Columns.Add("valueNVCaiTien", typeof(string));
-                    foreach (var item in dataPhancong_L_CH_K1)
-                    {
-                        DataRow row = KhoiSanXuat.NewRow();
-                        var dataPhongban = db.Tbl_PhongBan.Where(x => x.ID_PhongBan == item.PhongBan && x.Ma_Khoi == "K1").FirstOrDefault();
-                        var dataUser_Get_K1 = db.Tbl_User.Where(x => x.Username == item.Username).FirstOrDefault();
-                        row["valuePhongBan"] = item.PhongBan;
-                        row["textTenPhongBan"] = dataPhongban.TenPhongBan;
-                        row["valueUsername"] = item.Username;
-                        row["textUsername"] = dataUser_Get_K1.Fullname;
-                        row["textNVCaiTien"] = item.NVCaiTien;
-                        row["valueNVCaiTien"] = item.NVCaiTien;
-                        KhoiSanXuat.Rows.Add(row);
-                    }
-                    if (dataPhancong_H != null)
-                    {
-                        var result = new
-                        {
-                            ID_PhanCong = ID_PhanCong,
-                            ThangNam = formattedDate,
-                            ThoiGian = ThoiGian,
-                            KhoiSanXuat = KhoiSanXuat,
-                            KhoiVanPhong = KhoiVanPhong
-                        };
-                        var settings = new JsonSerializerSettings
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        };
-
-                        var json = JsonConvert.SerializeObject(result, settings);
-                        return Content(json, "application/json");
-
                     }
                     else
                     {
@@ -768,18 +842,412 @@ namespace _6S.Controllers
                             // Giải mã chuỗi JSON từ Base64
                             byte[] data = Convert.FromBase64String(encodedJson);
                             string jsonData = Encoding.UTF8.GetString(data);
-                            SqlParameter[] parameters_PhanCong = new SqlParameter[]
+
+                            DataTable ThoiGian = new DataTable("ThoiGian");
+                            DataTable KhoiSanXuat = new DataTable("KhoiSanXuat");
+                            DataTable KhoiVanPhong = new DataTable("KhoiVanPhong");
+                            ThoiGian.Columns.Add("6S");
+                            ThoiGian.Columns.Add("Chấm nội bộ");
+                            ThoiGian.Columns.Add("Chấm chéo");
+                            ThoiGian.Columns.Add("Chấm hiệu chỉnh");
+                            JObject json = JObject.Parse(jsonData);
+                            JArray gioData = (JArray)json["thoigianData_Edit"]["gioData_Edit"];
+                            JArray ngayData = (JArray)json["thoigianData_Edit"]["ngayData_Edit"];
+                            string ID_PhanCong = (string)json["ID_PhanCong"];
+                            // Thêm dữ liệu từ gioData vào hàng thứ hai của DataTable
+                            DataRow rowGioData = ThoiGian.NewRow();
+                            for (int i = 0; i < gioData.Count; i++)
                             {
-                                new SqlParameter("@ID_PhanCong", SqlDbType.VarChar, 10) { Value = phancong_L.ID_PhanCong },
-                                new SqlParameter("@PhongBan", SqlDbType.VarChar, 10) { Value = phancong_L.PhongBan },
-                                new SqlParameter("@Username", SqlDbType.VarChar, 20) { Value = phancong_L.Username },
-                                new SqlParameter("@TuNgay", SqlDbType.Date) { Value = phancong_L.TuNgay },
-                                new SqlParameter("@DenNgay", SqlDbType.Date) { Value = phancong_L.DenNgay },
-                                new SqlParameter("@ThangNam", SqlDbType.VarChar, 10) { Value = phancong_L.ThangNam },
-                                new SqlParameter("@Loai_BC", SqlDbType.VarChar, 10) { Value = phancong_L.Loai_BC },
-                            };
-                            db.Database.ExecuteSqlCommand("EXEC sp_Update_PhanCong @ID_PhanCong, @PhongBan, @Username, @TuNgay, @DenNgay, @ThangNam, @Loai_BC, @Status", parameters_PhanCong);
-                            logger.Info("Đã sửa Lịch làm  6S thành công :" + phancong_L.ID_PhanCong + "User add: " + Session["Username"]?.ToString());
+                                rowGioData[i] = gioData[i].ToString();
+                            }
+                            ThoiGian.Rows.Add(rowGioData);
+                            // Thêm dữ liệu từ ngayData vào hàng đầu tiên của DataTable
+                            DataRow rowNgayData = ThoiGian.NewRow();
+                            for (int i = 0; i < ngayData.Count; i++)
+                            {
+                                rowNgayData[i] = ngayData[i].ToString();
+                            }
+                            ThoiGian.Rows.InsertAt(rowNgayData, 1);
+                            // Thêm cột cho DataTable KhoiSanXuat
+                            KhoiSanXuat.Columns.Add("KHỐI SẢN XUẤT", typeof(string));
+                            KhoiSanXuat.Columns.Add("Thành Viên Ban ĐH", typeof(string));
+                            KhoiSanXuat.Columns.Add("Tổ Cải Tiến", typeof(string));
+                            // Thêm dữ liệu vào DataTable KhoiSanXuat từ JSON
+                            JArray sanXuatData = (JArray)json["sanXuatData_Edit"];
+                            foreach (JObject row in sanXuatData)
+                            {
+                                DataRow newRow_sanXuatData = KhoiSanXuat.NewRow();
+                                for (int i = 0; i < row.Count; i++)
+                                {
+                                    JObject item = row.ToObject<JObject>();
+                                    string valuePhongBan = item["valuePhongBan"]?.ToString();
+                                    string valueUsername = item["valueUsername"]?.ToString();
+                                    string valueToCaiTien = item["toCaiTienValue"]?.ToString();
+                                    if (i < KhoiSanXuat.Columns.Count)
+                                    {
+                                        newRow_sanXuatData["KHỐI SẢN XUẤT"] = valuePhongBan;
+                                        newRow_sanXuatData["Thành Viên Ban ĐH"] = valueUsername;
+                                        newRow_sanXuatData["Tổ Cải Tiến"] = valueToCaiTien;
+                                    }
+                                }
+                                KhoiSanXuat.Rows.Add(newRow_sanXuatData);
+                            }
+                            //Tạo cột DataTable KhoiVanPhong
+                            KhoiVanPhong.Columns.Add("KHỐI VĂN PHÒNG", typeof(string));
+                            KhoiVanPhong.Columns.Add("Thành Viên Ban ĐH", typeof(string));
+                            // Thêm dữ liệu vào DataTable KhoiVanPhong từ JSON
+                            JArray vanPhongData = (JArray)json["vanPhongData_Edit"];
+                            foreach (JObject row in vanPhongData)
+                            {
+                                DataRow newRow_vanPhongData = KhoiVanPhong.NewRow();
+                                for (int i = 0; i < row.Count; i++)
+                                {
+                                    JObject item = row.ToObject<JObject>();
+                                    string valuePhongBan = item["valuePhongBan"]?.ToString();
+                                    string valueUsername = item["valueUsername"]?.ToString();
+                                    if (i < KhoiVanPhong.Columns.Count)
+                                    {
+                                        newRow_vanPhongData["KHỐI VĂN PHÒNG"] = valuePhongBan;
+                                        newRow_vanPhongData["Thành Viên Ban ĐH"] = valueUsername;
+                                    }
+                                }
+                                KhoiVanPhong.Rows.Add(newRow_vanPhongData);
+                            }
+                            // Tạo DataTable mới để lưu trữ thông tin từ cột "Chấm nội bộ"
+                            DataTable Time_ChamNoiBo = new DataTable();
+                            Time_ChamNoiBo.Columns.Add("Gio");
+                            Time_ChamNoiBo.Columns.Add("TuNgay");
+                            Time_ChamNoiBo.Columns.Add("DenNgay");
+                            Time_ChamNoiBo.Columns.Add("Thangnam");
+                            // Lấy dữ liệu từ hàng thứ hai của DataTable ThoiGian
+                            string Col_NB_Row_Gio = ThoiGian.Rows[0]["Chấm nội bộ"].ToString();
+                            string Col_NB_Row_Ngay = ThoiGian.Rows[1]["Chấm nội bộ"].ToString();
+                            bool is_Date_Dash_NB = Col_NB_Row_Ngay.Contains("-");
+                            // Kiểm tra nếu chuỗi có dạng "DD/MM/yyyy"
+                            if (!is_Date_Dash_NB)
+                            {
+                                string[] check_Parts = Col_NB_Row_Ngay.Split('/');
+                                string tuNgay_Thang = check_Parts[1].Trim();
+                                string tuNgay_Nam = check_Parts[2].Trim();
+                                string thangNam = tuNgay_Thang + "/" + tuNgay_Nam;
+                                DataRow newRow = Time_ChamNoiBo.NewRow();
+                                newRow["Gio"] = Col_NB_Row_Gio;
+                                newRow["TuNgay"] = Col_NB_Row_Ngay;
+                                newRow["DenNgay"] = Col_NB_Row_Ngay;
+                                newRow["Thangnam"] = thangNam;
+                                Time_ChamNoiBo.Rows.Add(newRow);
+                            }
+                            // Kiểm tra nếu chuỗi có dạng "DDStart-DDEnd/MM/yyyy"
+                            else
+                            {
+                                string[] check_Parts = Col_NB_Row_Ngay.Split('/');//15-22, 11, 2023
+                                string[] check_Parts_Dash = check_Parts[0].Split('-');
+                                // check_Parts[0] chứa giá trị phía trước dấu '-'
+                                string StartDate = check_Parts_Dash[0];//15
+                                                                       // check_Parts[1] chứa giá trị phía sau dấu '-'
+                                string EndDate = check_Parts_Dash[1];//22
+                                string[] thang = check_Parts[1].Split('/');//11
+                                string[] nam = check_Parts[2].Split('/');//2023
+                                string tuNgay = StartDate + "/" + thang[0] + "/" + nam[0];
+                                string denNgay = EndDate + "/" + thang[0] + "/" + nam[0];
+                                string thangNam = thang[0] + "/" + nam[0];
+                                DataRow newRow = Time_ChamNoiBo.NewRow();
+                                newRow["Gio"] = Col_NB_Row_Gio;
+                                newRow["TuNgay"] = tuNgay;
+                                newRow["DenNgay"] = denNgay;
+                                newRow["Thangnam"] = thangNam;
+                                Time_ChamNoiBo.Rows.Add(newRow);
+                            }
+                            // Tạo DataTable mới để lưu trữ thông tin từ cột "Chấm chéo"
+                            DataTable Time_ChamCheo = new DataTable();
+                            Time_ChamCheo.Columns.Add("Gio");
+                            Time_ChamCheo.Columns.Add("TuNgay");
+                            Time_ChamCheo.Columns.Add("DenNgay");
+                            Time_ChamCheo.Columns.Add("Thangnam");
+                            // Lấy dữ liệu từ hàng thứ hai của DataTable ThoiGian
+                            string Col_CH_Row_Gio = ThoiGian.Rows[0]["Chấm chéo"].ToString();
+                            string Col_CH_Row_Ngay = ThoiGian.Rows[1]["Chấm chéo"].ToString();
+                            bool is_Date_Dash_CH = Col_CH_Row_Ngay.Contains("-");
+                            // Kiểm tra nếu chuỗi có dạng "DD/MM/yyyy"
+                            if (!is_Date_Dash_CH)
+                            {
+                                string[] check_Parts = Col_CH_Row_Ngay.Split('/');
+                                string tuNgay_Thang = check_Parts[1].Trim();
+                                string tuNgay_Nam = check_Parts[2].Trim();
+                                string thangNam = tuNgay_Thang + "/" + tuNgay_Nam;
+                                DataRow newRow = Time_ChamCheo.NewRow();
+                                newRow["Gio"] = Col_CH_Row_Gio;
+                                newRow["TuNgay"] = Col_CH_Row_Ngay;
+                                newRow["DenNgay"] = Col_CH_Row_Ngay;
+                                newRow["Thangnam"] = thangNam;
+                                Time_ChamCheo.Rows.Add(newRow);
+                            }
+                            // Kiểm tra nếu chuỗi có dạng "DDStart-DDEnd/MM/yyyy"
+                            else
+                            {
+                                string[] check_Parts = Col_CH_Row_Ngay.Split('/');//15-22, 11, 2023
+                                string[] check_Parts_Dash = check_Parts[0].Split('-');
+                                // check_Parts[0] chứa giá trị phía trước dấu '-'
+                                string StartDate = check_Parts_Dash[0];//15
+                                                                       // check_Parts[1] chứa giá trị phía sau dấu '-'
+                                string EndDate = check_Parts_Dash[1];//22
+                                string[] thang = check_Parts[1].Split('/');//11
+                                string[] nam = check_Parts[2].Split('/');//2023
+                                string tuNgay = StartDate + "/" + thang[0] + "/" + nam[0];
+                                string denNgay = EndDate + "/" + thang[0] + "/" + nam[0];
+                                string thangNam = thang[0] + "/" + nam[0];
+                                DataRow newRow = Time_ChamCheo.NewRow();
+                                newRow["Gio"] = Col_CH_Row_Gio;
+                                newRow["TuNgay"] = tuNgay;
+                                newRow["DenNgay"] = denNgay;
+                                newRow["Thangnam"] = thangNam;
+                                Time_ChamCheo.Rows.Add(newRow);
+                            }
+                            // Tạo DataTable mới để lưu trữ thông tin từ cột "Chấm hiệu chỉnh"
+                            DataTable Time_ChamHieuChinh = new DataTable();
+                            Time_ChamHieuChinh.Columns.Add("Gio");
+                            Time_ChamHieuChinh.Columns.Add("TuNgay");
+                            Time_ChamHieuChinh.Columns.Add("DenNgay");
+                            Time_ChamHieuChinh.Columns.Add("Thangnam");
+                            // Lấy dữ liệu từ hàng thứ hai của DataTable ThoiGian
+                            string Col_HC_Row_Gio = ThoiGian.Rows[0]["Chấm hiệu chỉnh"].ToString();
+                            string Col_HC_Row_Ngay = ThoiGian.Rows[1]["Chấm hiệu chỉnh"].ToString();
+                            bool is_Date_Dash_HC = Col_HC_Row_Ngay.Contains("-");
+                            // Kiểm tra nếu chuỗi có dạng "DD/MM/yyyy"
+                            if (!is_Date_Dash_HC)
+                            {
+                                string[] check_Parts = Col_HC_Row_Ngay.Split('/');
+                                string tuNgay_Thang = check_Parts[1].Trim();
+                                string tuNgay_Nam = check_Parts[2].Trim();
+                                string thangNam = tuNgay_Thang + "/" + tuNgay_Nam;
+                                DataRow newRow = Time_ChamHieuChinh.NewRow();
+                                newRow["Gio"] = Col_HC_Row_Gio;
+                                newRow["TuNgay"] = Col_HC_Row_Ngay;
+                                newRow["DenNgay"] = Col_HC_Row_Ngay;
+                                newRow["Thangnam"] = thangNam;
+                                Time_ChamHieuChinh.Rows.Add(newRow);
+                            }
+                            // Kiểm tra nếu chuỗi có dạng "DDStart-DDEnd/MM/yyyy"
+                            else
+                            {
+                                string[] check_Parts = Col_HC_Row_Ngay.Split('/');//15-22, 11, 2023
+                                string[] check_Parts_Dash = check_Parts[0].Split('-');
+                                // check_Parts[0] chứa giá trị phía trước dấu '-'
+                                string StartDate = check_Parts_Dash[0];//15
+                                                                       // check_Parts[1] chứa giá trị phía sau dấu '-'
+                                string EndDate = check_Parts_Dash[1];//22
+                                string[] thang = check_Parts[1].Split('/');//11
+                                string[] nam = check_Parts[2].Split('/');//2023
+                                string tuNgay = StartDate + "/" + thang[0] + "/" + nam[0];
+                                string denNgay = EndDate + "/" + thang[0] + "/" + nam[0];
+                                string thangNam = thang[0] + "/" + nam[0];
+                                DataRow newRow = Time_ChamHieuChinh.NewRow();
+                                newRow["Gio"] = Col_HC_Row_Gio;
+                                newRow["TuNgay"] = tuNgay;
+                                newRow["DenNgay"] = denNgay;
+                                newRow["Thangnam"] = thangNam;
+                                Time_ChamHieuChinh.Rows.Add(newRow);
+                            }
+                            // Tạo DataTable tổng mới
+                            DataTable TongHop_CH = new DataTable();
+                            TongHop_CH.Columns.Add("PhongBan", typeof(string));
+                            TongHop_CH.Columns.Add("Username", typeof(string));
+                            TongHop_CH.Columns.Add("Gio", typeof(string));
+                            TongHop_CH.Columns.Add("TuNgay", typeof(DateTime));
+                            TongHop_CH.Columns.Add("DenNgay", typeof(DateTime));
+                            TongHop_CH.Columns.Add("ThangNam", typeof(string));
+                            TongHop_CH.Columns.Add("Status", typeof(int));
+                            TongHop_CH.Columns.Add("Loai_BC", typeof(string));
+                            TongHop_CH.Columns.Add("NVCaiTien", typeof(string));
+                            TongHop_CH.Columns.Add("MaKhoi", typeof(string));
+
+                            // Duyệt qua các hàng trong DataTable Time_ChamCheo
+                            foreach (DataRow row in Time_ChamCheo.Rows)
+                            {
+                                string Gio = row["Gio"].ToString();
+                                string tuNgay = row["TuNgay"].ToString();
+                                string denNgay = row["DenNgay"].ToString();
+                                string format = "dd/MM/yyyy"; // Định dạng của chuỗi ngày tháng
+                                DateTime tuNgayDateTime = DateTime.ParseExact(tuNgay, format, CultureInfo.InvariantCulture);
+                                DateTime denNgayDateTime = DateTime.ParseExact(denNgay, format, CultureInfo.InvariantCulture);
+                                string thangNam = row["Thangnam"].ToString();
+                                // Lấy dữ liệu từ DataTable KhoiSanXuat và thêm vào bảng tổng mới
+                                foreach (DataRow sanXuatRow in KhoiSanXuat.Rows)
+                                {
+                                    string phongBan = sanXuatRow["KHỐI SẢN XUẤT"].ToString();
+                                    string Username = sanXuatRow["Thành Viên Ban ĐH"].ToString();
+                                    string nvCaiTien = sanXuatRow["Tổ Cải Tiến"].ToString();
+                                    TongHop_CH.Rows.Add(phongBan, Username, Gio, tuNgayDateTime, denNgayDateTime, thangNam, "1", "CH", nvCaiTien, "K1");
+                                }
+                                // Lấy dữ liệu từ DataTable KhoiVanPhong và thêm vào bảng tổng mới
+                                foreach (DataRow vanPhongRow in KhoiVanPhong.Rows)
+                                {
+                                    string phongBan = vanPhongRow["KHỐI VĂN PHÒNG"].ToString();
+                                    string Username = vanPhongRow["Thành Viên Ban ĐH"].ToString();
+                                    TongHop_CH.Rows.Add(phongBan, Username, Gio, tuNgayDateTime, denNgayDateTime, thangNam, "1", "CH", "", "K2");
+                                }
+                            }
+                            // Lấy dữ liệu nhóm chấm hiệu chỉnh
+                            string sqlQuery_HC = "SELECT A.ID_PhongBan AS PhongBan, A.Username, CAST(NULL AS VARCHAR) AS Gio, CAST(NULL AS DATETIME) AS TuNgay, CAST(NULL AS DATETIME) AS DenNgay, NULL AS ThangNam, 1 AS Status, 'HC' AS Loai_BC, NULL AS NVCaiTien, NULL AS MaKhoi FROM Tbl_User A INNER JOIN Tbl_NhomQuyen B ON A.NhomQuyen = B.ID_NhomQuyen INNER JOIN Tbl_DMQuyen C ON B.IDMenu = C.ID_Quyen WHERE B.IDMenu = 'CHC' AND A.NhomQuyen = '2000'";
+                            List<Tbl_PhanCong_L_View> Tbl_PhanCong_L_View_HC = db.Database.SqlQuery<Tbl_PhanCong_L_View>(sqlQuery_HC).ToList();
+                            // Tạo một DataTable mới cho HC
+                            DataTable dataTable_HC = new DataTable();
+                            // Lấy danh sách các thuộc tính của lớp Tbl_PhanCong_L_View cho HC
+                            var properties_HC = typeof(Tbl_PhanCong_L_View).GetProperties();
+                            // Tạo các cột trong DataTable cho HC với tên của thuộc tính và kiểu dữ liệu tương ứng
+                            foreach (var property in properties_HC)
+                            {
+                                dataTable_HC.Columns.Add(property.Name, Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
+                            }
+                            // Thêm dữ liệu từ List vào DataTable cho HC
+                            foreach (var item in Tbl_PhanCong_L_View_HC)
+                            {
+                                var values = new object[properties_HC.Length];
+                                for (int i = 0; i < properties_HC.Length; i++)
+                                {
+                                    values[i] = properties_HC[i].GetValue(item);
+                                }
+                                dataTable_HC.Rows.Add(values);
+                            }
+                            // Số dòng trong DataTable Time_ChamHieuChinh
+                            int numRows_HC = Time_ChamHieuChinh.Rows.Count;
+                            for (int i = 0; i < numRows_HC; i++)
+                            {
+                                for (int j = 0; j < dataTable_HC.Rows.Count; j++)
+                                {
+                                    string Gio = Time_ChamHieuChinh.Rows[i]["Gio"].ToString();
+                                    string tuNgay = Time_ChamHieuChinh.Rows[i]["TuNgay"].ToString();
+                                    string denNgay = Time_ChamHieuChinh.Rows[i]["DenNgay"].ToString();
+                                    string thangNam = Time_ChamHieuChinh.Rows[i]["Thangnam"].ToString();
+                                    string format = "dd/MM/yyyy";
+                                    DateTime tuNgayDateTime = DateTime.ParseExact(tuNgay, format, CultureInfo.InvariantCulture);
+                                    DateTime denNgayDateTime = DateTime.ParseExact(denNgay, format, CultureInfo.InvariantCulture);
+                                    dataTable_HC.Rows[j]["Gio"] = Gio;
+                                    dataTable_HC.Rows[j]["TuNgay"] = tuNgayDateTime;
+                                    dataTable_HC.Rows[j]["DenNgay"] = denNgayDateTime;
+                                    dataTable_HC.Rows[j]["Thangnam"] = thangNam;
+                                }
+                            }
+                            // Lấy dữ liệu nhóm chấm nội bộ
+                            string sqlQuery_NB = "SELECT A.ID_PhongBan AS PhongBan, A.Username, CAST(NULL AS VARCHAR) AS Gio, CAST(NULL AS DATETIME) AS TuNgay, CAST(NULL AS DATETIME) AS DenNgay, NULL AS ThangNam, 1 AS Status, 'NB' AS Loai_BC, NULL AS NVCaiTien, NULL AS MaKhoi FROM Tbl_User A INNER JOIN Tbl_NhomQuyen B ON A.NhomQuyen = B.ID_NhomQuyen INNER JOIN Tbl_DMQuyen C ON B.IDMenu = C.ID_Quyen WHERE B.IDMenu = 'CNB'";
+                            List<Tbl_PhanCong_L_View> Tbl_PhanCong_L_View_NB = db.Database.SqlQuery<Tbl_PhanCong_L_View>(sqlQuery_NB).ToList();
+                            // Tạo một DataTable mới cho NB
+                            DataTable dataTable_NB = new DataTable();
+                            // Lấy danh sách các thuộc tính của lớp Tbl_PhanCong_L_View cho NB
+                            var properties_NB = typeof(Tbl_PhanCong_L_View).GetProperties();
+                            // Tạo các cột trong DataTable cho NB với tên của thuộc tính và kiểu dữ liệu tương ứng
+                            foreach (var property in properties_NB)
+                            {
+                                dataTable_NB.Columns.Add(property.Name, Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
+                            }
+                            // Thêm dữ liệu từ List vào DataTable cho NB
+                            foreach (var item in Tbl_PhanCong_L_View_NB)
+                            {
+                                var values = new object[properties_NB.Length];
+                                for (int i = 0; i < properties_NB.Length; i++)
+                                {
+                                    values[i] = properties_NB[i].GetValue(item);
+                                }
+                                dataTable_NB.Rows.Add(values);
+                            }
+                            // Số dòng trong DataTable Time_ChamNoiBo
+                            int numRows_NB = Time_ChamNoiBo.Rows.Count;
+                            for (int i = 0; i < numRows_NB; i++)
+                            {
+                                for (int j = 0; j < dataTable_NB.Rows.Count; j++)
+                                {
+                                    string Gio = Time_ChamNoiBo.Rows[i]["Gio"].ToString();
+                                    string tuNgay = Time_ChamNoiBo.Rows[i]["TuNgay"].ToString();
+                                    string denNgay = Time_ChamNoiBo.Rows[i]["DenNgay"].ToString();
+                                    string thangNam = Time_ChamNoiBo.Rows[i]["Thangnam"].ToString();
+                                    string format = "dd/MM/yyyy"; // Định dạng của chuỗi ngày tháng9
+                                    DateTime tuNgayDateTime = DateTime.ParseExact(tuNgay, format, CultureInfo.InvariantCulture);
+                                    DateTime denNgayDateTime = DateTime.ParseExact(denNgay, format, CultureInfo.InvariantCulture);
+                                    dataTable_NB.Rows[j]["Gio"] = Gio;
+                                    dataTable_NB.Rows[j]["TuNgay"] = tuNgayDateTime;
+                                    dataTable_NB.Rows[j]["DenNgay"] = denNgayDateTime;
+                                    dataTable_NB.Rows[j]["Thangnam"] = thangNam;
+                                }
+                            }
+                            // Tạo một DataTable mới để lưu trữ kết quả nối các bảng lại với nhau
+                            DataTable combinedDataTable = new DataTable();
+                            // Sao chép cấu trúc của dataTable_HC để bắt đầu
+                            combinedDataTable = dataTable_HC.Clone();
+                            // Thêm cột ID_PhanCong vào đầu của DataTable
+                            DataColumn newColumn = new DataColumn("ID_PhanCong", typeof(string)); // Điều chỉnh kiểu dữ liệu tương ứng
+                            combinedDataTable.Columns.Add(newColumn);
+                            // Di chuyển cột mới tạo vào vị trí đầu tiên của DataTable
+                            combinedDataTable.Columns[newColumn.ColumnName].SetOrdinal(0);
+                            // Nối tiếp các DataTable theo thứ tự: dataTable_HC -> dataTable_NB -> TongHop_CH
+                            combinedDataTable.Merge(dataTable_HC);
+                            // Kiểm tra xem TongHop_CH và dataTable_NB có số cột giống nhau hay không trước khi nối
+                            if (TongHop_CH.Columns.Count == dataTable_NB.Columns.Count)
+                            {
+                                combinedDataTable.Merge(dataTable_NB);
+                                combinedDataTable.Merge(TongHop_CH);
+                            }
+                            else
+                            {
+                                // Nếu số cột không khớp, thực hiện việc nối một cách thủ công (cột của TongHop_CH được thêm vào cuối)
+                                DataTable dataTable_NBWithExtraColumns = dataTable_NB.Copy();
+                                foreach (DataColumn col in TongHop_CH.Columns)
+                                {
+                                    if (!dataTable_NBWithExtraColumns.Columns.Contains(col.ColumnName))
+                                    {
+                                        dataTable_NBWithExtraColumns.Columns.Add(col.ColumnName, col.DataType);
+                                    }
+                                }
+                                combinedDataTable.Merge(dataTable_NBWithExtraColumns);
+                                combinedDataTable.Merge(TongHop_CH);
+                            }
+                            // Đặt giá trị cho cột "ID_PhanCong" trong combinedDataTable
+                            foreach (DataRow row in combinedDataTable.Rows)
+                            {
+                                row["ID_PhanCong"] = ID_PhanCong;
+                            }
+                            var recordToApprove_L = db.Tbl_PhanCong_L.Where(x => x.ID_PhanCong == ID_PhanCong).ToList();
+                            db.Tbl_PhanCong_L.RemoveRange(recordToApprove_L);
+                            db.SaveChanges();
+                            foreach (DataRow row in combinedDataTable.Rows)
+                            {
+                                // Lấy dữ liệu từ mỗi cột trong hàng hiện tại
+                                string ID_PhanCong_Row_combinedDataTable = row["ID_PhanCong"].ToString();
+                                string PhongBan = row["PhongBan"].ToString();
+                                string Username = row["Username"].ToString();
+                                string Gio = row["Gio"].ToString();
+                                DateTime TuNgay = (DateTime)row["TuNgay"];
+                                DateTime DenNgay = (DateTime)row["DenNgay"];
+                                string ThangNam = row["ThangNam"].ToString();
+                                string Loai_BC = row["Loai_BC"].ToString();
+                                string NVCaiTien = row["NVCaiTien"].ToString();
+                                string MaKhoi = row["MaKhoi"].ToString();
+                                SqlParameter[] parameters_PhanCong_L = new SqlParameter[]
+                                {
+                                    new SqlParameter("@ID_PhanCong", SqlDbType.VarChar, 20) { Value = ID_PhanCong_Row_combinedDataTable },
+                                    new SqlParameter("@PhongBan", SqlDbType.VarChar, 10) { Value = PhongBan },
+                                    new SqlParameter("@Username", SqlDbType.VarChar, 30) { Value = Username },
+                                    new SqlParameter("@Gio", SqlDbType.VarChar, 30) { Value = Gio },
+                                    new SqlParameter("@TuNgay", SqlDbType.Date) { Value = TuNgay },
+                                    new SqlParameter("@DenNgay", SqlDbType.Date) { Value = DenNgay },
+                                    new SqlParameter("@ThangNam", SqlDbType.VarChar, 10) { Value = ThangNam },
+                                    new SqlParameter("@Loai_BC", SqlDbType.VarChar, 10) { Value = Loai_BC },
+                                    new SqlParameter("@NVCaiTien", SqlDbType.NVarChar, 50) { Value = NVCaiTien },
+                                    new SqlParameter("@MaKhoi", SqlDbType.VarChar, 10) { Value = MaKhoi },
+                                };
+                                db.Database.ExecuteSqlCommand("EXEC sp_Insert_PhanCong_L @ID_PhanCong, @PhongBan, @Username, @Gio, @TuNgay, @DenNgay, @ThangNam, @Loai_BC, @NVCaiTien, @MaKhoi", parameters_PhanCong_L);
+                            }
+                            //SqlParameter[] parameters_PhanCong = new SqlParameter[]
+                            //{
+                            //    new SqlParameter("@ID_PhanCong", SqlDbType.VarChar, 10) { Value = phancong_L.ID_PhanCong },
+                            //    new SqlParameter("@PhongBan", SqlDbType.VarChar, 10) { Value = phancong_L.PhongBan },
+                            //    new SqlParameter("@Username", SqlDbType.VarChar, 20) { Value = phancong_L.Username },
+                            //    new SqlParameter("@TuNgay", SqlDbType.Date) { Value = phancong_L.TuNgay },
+                            //    new SqlParameter("@DenNgay", SqlDbType.Date) { Value = phancong_L.DenNgay },
+                            //    new SqlParameter("@ThangNam", SqlDbType.VarChar, 10) { Value = phancong_L.ThangNam },
+                            //    new SqlParameter("@Loai_BC", SqlDbType.VarChar, 10) { Value = phancong_L.Loai_BC },
+                            //};
+                            //db.Database.ExecuteSqlCommand("EXEC sp_Update_PhanCong @ID_PhanCong, @PhongBan, @Username, @TuNgay, @DenNgay, @ThangNam, @Loai_BC, @Status", parameters_PhanCong);
+                            logger.Info("Đã sửa Lịch làm  6S thành công :" + phancong_L.ID_PhanCong + "User up: " + Session["Username"]?.ToString());
                             var datalist = db.Tbl_PhanCong_L.ToList();
                             return Json(new
                             {
@@ -842,7 +1310,8 @@ namespace _6S.Controllers
                     var item = db.Tbl_PhanCong_H.Find(ID_PhanCong);
                     if (item != null)
                     {
-                        var path = @"\\192.168.24.108\6s_Pro";
+                        var isCatalogProvided = share_All.IsInitialCatalogProvided();
+                        string path = $@"\\192.168.24.108\{isCatalogProvided ?? ""}";
                         var file = Path.Combine(path, item.Duongluu);
                         file = Path.GetFullPath(file);
                         if (file.StartsWith(path) && System.IO.File.Exists(file))
@@ -889,7 +1358,8 @@ namespace _6S.Controllers
                 {
                     var item = db.Tbl_PhanCong_H.Where(x => x.ID_PhanCong == ID_PhanCong).FirstOrDefault();
                     // Đường dẫn đến tệp PDF trên máy chủ mạng
-                    string filePath = @"\\192.168.24.108\6s_Pro\" + item.Duongluu;
+                    var isCatalogProvided = share_All.IsInitialCatalogProvided();
+                    string filePath = $@"\\192.168.24.108\{isCatalogProvided ?? ""}\{item.Duongluu}";
                     if (System.IO.File.Exists(filePath))
                     {
                         // Đọc tệp thành một mảng byte
@@ -915,7 +1385,6 @@ namespace _6S.Controllers
                     logger.Error("Lỗi: ", ex);
                     return Json(new { success = false, message = "Lỗi: " + ex.Message });
                 }
-
             }
             else
             {
@@ -923,6 +1392,7 @@ namespace _6S.Controllers
                 return RedirectToAction("Login", "Login");
             }
         }
+        [HttpPost]
         public ActionResult Approve_PhanCong(string ID_PhanCong, int Status, Tbl_PhanCong_L phancong_L)
         {
             var checkAccount = share_All.CheckAccount(Session["Username"]?.ToString());
@@ -1267,7 +1737,9 @@ namespace _6S.Controllers
                                 byte[] pdfBytes = memoryStream.ToArray();
                                 // Lưu tệp PDF xuống đĩa
                                 fileName = "Lich_lam_viec_6S_thang_" + formattedDate + "_" + ID_PhanCong + "_" + Session["Username"]?.ToString() + ".pdf";
-                                filePath = Path.Combine("\\\\192.168.24.108\\6s_Pro", fileName);
+                                var isCatalogProvided = share_All.IsInitialCatalogProvided();
+                                string path = $@"\\192.168.24.108\{isCatalogProvided ?? ""}";
+                                filePath = Path.Combine(path, fileName);
                                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                                 {
                                     fileStream.Write(pdfBytes, 0, pdfBytes.Length);

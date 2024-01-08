@@ -84,7 +84,7 @@
                                                                 </a>
                                                             }
                                                             else { }
-                                                            @if (ViewData["ButtonsOpenDownload"] as bool? == true && ViewData["ButtonsOpenDPC"] != null)
+                                                            @if (ViewData["ButtonsOpenDownload"] as bool? == true && ViewData["ButtonsOpenDownload"] != null)
                                                             {
                                                                 <button type="button" class="btn btn-outline-dark" title="Tải files báo cáo @item.ID_PhanCong" onclick="downloadPDF('@item.ID_PhanCong')">
                                                                     <i class="fas fa-download"></i>
@@ -331,6 +331,7 @@
     <!---sửa-->
     <script>
         $('.btnEdit').click(function () {
+            $('#loading').show();
             $('#editModal').modal('show');
             loadScript("/Assets/js/phancong.js");
             function loadScript(url) {
@@ -343,14 +344,20 @@
                 url: 'Edit_PhanCong',
                 type: 'GET',
                 dataType: 'json',
-                data: { ID_PhanCong: ID_PhanCong },
+                data: { MaPhanCong: btoa(ID_PhanCong) },
                 success: function (response) {
-                    if (!response && response.result && Array.isArray(response.result) && response.result.length === 0) {
+/*                    console.log('data: ',response);*/
+                    if (response.success === false) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Thông báo',
-                            text: 'Dữ liệu trả về rỗng.'
+                            text: response.message,
+                            timer: 2000,
+                            timerProgressBar: true,
+                        }).then(function () {
+                            location.reload();
                         });
+                        $('#loading').hide();
                     } else {
                         var dataThoiGian = response.ThoiGian;
                         var dataKhoiSanXuat = response.KhoiSanXuat;
@@ -363,11 +370,11 @@
                         formattedDateDisplayValue.value = dataThangNam;
                         //console.log(dataThangNam);
                         //console.table(dataThoiGian);
-                        console.table(dataKhoiSanXuat);
-                        //console.table(dataKhoiVanPhong);
+                        //console.table(dataKhoiSanXuat);
+                        /*console.log(dataKhoiVanPhong);*/
                         var tableThoiGian = document.getElementById("previewTable_thoigian_Edit");
                         var tableKhoiSanXuat = document.getElementById("tableBody_sanxuat_Edit");
-                        var tableKhoiVanPhong = document.getElementById("previewTable_vanphong_Edit");
+                        var tableKhoiVanPhong = document.getElementById("tableBody_vanphong_Edit");
                         if (tableThoiGian && Array.isArray(dataThoiGian)) {
                             var tbody = tableThoiGian.getElementsByTagName("tbody")[0];
 
@@ -391,7 +398,6 @@
                         }
                         dataKhoiSanXuat.forEach(function (data) {
                             var row = document.createElement("tr");
-
                             var cellPhongBan = document.createElement("td");
                             cellPhongBan.setAttribute("value-phongban", data.valuePhongBan);
                             cellPhongBan.textContent = data.textTenPhongBan;
@@ -412,8 +418,7 @@
                             deleteButton.className = "btn btn-outline-danger";
                             deleteButton.textContent = "Xóa";
                             deleteButton.onclick = function () {
-                                // Viết logic xử lý xóa hàng ở đây nếu cần
-                                // Ví dụ: this.closest('tr').remove();
+                                deleteRow(this);
                             };
                             cellActions.appendChild(deleteButton);
                             row.appendChild(cellActions);
@@ -437,26 +442,13 @@
                             deleteButton.className = "btn btn-outline-danger";
                             deleteButton.textContent = "Xóa";
                             deleteButton.onclick = function () {
-                                // Viết logic xử lý xóa hàng ở đây nếu cần
-                                // Ví dụ: this.closest('tr').remove();
+                                deleteRow(this);
                             };
                             cellActions.appendChild(deleteButton);
                             row.appendChild(cellActions);
 
                             tableKhoiVanPhong.appendChild(row);
                         });
-                        //    if (tableKhoiVanPhong && Array.isArray(dataKhoiVanPhong)) {
-                        //        var tbody = tableKhoiVanPhong.getElementsByTagName("tbody")[0];
-                        //        for (var i = 0; i < dataKhoiVanPhong.length; i++) {
-                        //            var row = tbody.insertRow(i);
-                        //            var cellPhongBan = row.insertCell();
-                        //            cellPhongBan.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].valuePhongBan + '</span>' + dataKhoiVanPhong[i].textTenPhongBan;
-                        //            var cellUsername = row.insertCell();
-                        //            cellUsername.innerHTML = '<span class="hidden-value">' + dataKhoiVanPhong[i].valueUsername + '</span>' + dataKhoiVanPhong[i].textUsername;
-                        //            var cellActions = row.insertCell();
-                        //            cellActions.innerHTML = '<button class="btn btn-outline-danger" onclick="deleteRow(this)">Xóa</button>';
-                        //        }
-                        //    }
                     }
                 },
                 error: function (xhr, status, error) {
@@ -469,16 +461,13 @@
                 }
             });
         });
-        $('#btnCancel, .close').on('click', function (e) {
-            $('#editModal').modal('hide');
-            location.reload();
-        });
+        //xóa theo hàng
         function deleteRow(btn) {
             var row = btn.parentNode.parentNode;
-            var cells = row.getElementsByTagName("td");
-            var ID_PhanCong = cells[0].querySelector('.hidden-value').textContent;
-            var valuePhongBan = cells[1].querySelector('.hidden-value').textContent;
-            var valueUsername = cells[2].querySelector('.hidden-value').textContent;
+            var cells = row.closest("tr");
+            var ID_PhanCong = document.getElementById("selectedThangNam_Edit").textContent.split("Mã phân công: ")[1].trim();
+            var valuePhongBan = row.querySelector('td[value-phongban]').getAttribute('value-phongban');
+            var valueUsername = row.querySelector('td[value-username]').getAttribute('value-username');
             Swal.fire({
                 title: 'Bạn chắc chắn muốn xóa lịch làm này ?',
                 icon: 'question',
@@ -503,7 +492,6 @@
                                 icon: data.success ? 'success' : 'error',
                                 confirmButtonText: 'Đóng'
                             });
-                            // Xóa hàng khỏi bảng ngay cả khi có lỗi
                             if (data.success) {
                                 row.parentNode.removeChild(row);
                             }
@@ -520,37 +508,40 @@
                 }
             });
         }
+        $('#btnCancel, .close').on('click', function (e) {
+            $('#editModal').modal('hide');
+            location.reload();
+        });
     </script>
-    <script>
+    @*<script>
         // Hàm để hiển thị dữ liệu từ bảng khi button được nhấn
         function showTableData() {
             var table = document.getElementById("previewTable_sanxuat_Edit");
-
+            console.log('table', table);
             if (table) {
+                var rows = document.querySelectorAll('#previewTable_sanxuat_Edit tbody tr');
                 var data = [];
+                console.log('cột', rows);
+                rows.forEach(function (row) {
+                    var phongBanValue = row.querySelector('td[value-phongban]').getAttribute('value-phongban');
+                    var phongBanText = row.querySelector('td[value-phongban]').textContent;
 
-                for (var i = 0; i < table.rows.length; i++) {
-                    var row = table.rows[i];
-                    var rowData = {};
+                    var thanhVienValue = row.querySelector('td[value-username]').getAttribute('value-username');
+                    var thanhVienText = row.querySelector('td[value-username]').textContent;
 
-                    var cells = row.getElementsByTagName("td");
-                    if (cells.length > 0) {
-                        rowData.valuePhongBan = cells[0].getAttribute('value-phongban');
-                        rowData.textTenPhongBan = cells[0].textContent.trim();
+                    var toCaiTienValue = row.querySelector('td[nvcaitien]').getAttribute('nvcaitien');
+                    var toCaiTienText = row.querySelector('td[nvcaitien]').textContent;
 
-                        rowData.valueUsername = cells[1].getAttribute('value-username');
-                        rowData.textUsername = cells[1].textContent.trim();
-
-                        rowData.valueNVCaiTien = cells[2].getAttribute('nvcaitien');
-                        rowData.textNVCaiTien = cells[2].textContent.trim();
-
-                        data.push(rowData);
-                    }
-                }
-
-                // Hiển thị dữ liệu trong console
-                console.log('Dữ liệu từ bảng:');
-                console.table(data);
+                    data.push({
+                        valuePhongBan: phongBanValue,
+                        textTenPhongBan: phongBanText,
+                        valueUsername: thanhVienValue,
+                        textUsername: thanhVienText,
+                        valueNVCaiTien: toCaiTienValue,
+                        textNVCaiTien: toCaiTienText
+                    });
+                });
+                console.table('sx', data);
             } else {
                 console.log('Không tìm thấy bảng có ID "previewTable_sanxuat_Edit".');
             }
@@ -564,7 +555,7 @@
         // Hàm để hiển thị dữ liệu từ bảng khi button được nhấn
         function showTableData() {
             var table = document.getElementById("previewTable_vanphong_Edit");
-
+            console.table('vanphong', table);
             if (table) {
                 var data = [];
 
@@ -583,10 +574,7 @@
                         data.push(rowData);
                     }
                 }
-
-                // Hiển thị dữ liệu trong console
-                console.log('Dữ liệu từ bảng:');
-                console.table(data);
+                console.table('vp', data);
             } else {
                 console.log('Không tìm thấy bảng có ID "previewTable_vanphong_Edit".');
             }
@@ -595,8 +583,7 @@
         // Gắn sự kiện click cho button
         var showDataBtn = document.getElementById('showDataBtnx');
         showDataBtn.addEventListener('click', showTableData);
-    </script>
-
+    </script>*@
     <!--Hiển thị thông báo từ return Viewbag của controller-->
     @{
         // Lấy giá trị từ ViewBag và truyền vào mã nguồn JavaScript
@@ -720,7 +707,9 @@
                     icon: 'info',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
                 });
                 setTimeout(function() {
                     checkDownloadStatus(downloadUrl);
@@ -728,10 +717,7 @@
             });
             link.click();
         }
-
-        // Function to check download status
         function checkDownloadStatus(downloadUrl) {
-            // Send a HEAD request to the download URL
             var xhr = new XMLHttpRequest();
             xhr.open('HEAD', downloadUrl, true);
             xhr.onreadystatechange = function() {
@@ -751,7 +737,7 @@
 
                     Swal.fire({
                         title: 'Tải xuống thất bại',
-                        text: errorMessage, // Display the specific error message
+                        text: errorMessage,
                         icon: 'error',
                         timer: 3000
                     }).then(function () {

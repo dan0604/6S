@@ -3,10 +3,12 @@ using _6S.Controllers;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 
 namespace _6S.Models
@@ -16,7 +18,8 @@ namespace _6S.Models
         Model_6S db = new Model_6S();
         private ILog logger = LogManager.GetLogger(typeof(Share_All));
         private Dictionary<string, bool> quyenButtonsDict;
-        public string GetMD5(string str)///mã hóa pass md5
+        //Mã hóa pass md5
+        public string GetMD5(string str)
         {
             try
             {
@@ -34,8 +37,23 @@ namespace _6S.Models
             catch (Exception ex)
             {
                 // Xử lý ngoại lệ ở đây
-                logger.Error("Lỗi: ", ex);
+                logger.Error("Lỗi MD5: ", ex);
                 return "Đã xảy ra lỗi khi mã hóa MD5: " + ex.Message;
+            }
+        }
+        //Giải mã base64
+        public string DecodeBase64String(string base64String)
+        {
+            try
+            {
+                byte[] bytes = Convert.FromBase64String(base64String);
+                string result = Encoding.UTF8.GetString(bytes);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Lỗi base64: ", ex);
+                return "Đã xảy ra lỗi khi mã hóa Base64: " + ex.Message;
             }
         }
         //Xác thực tài khoản
@@ -51,22 +69,22 @@ namespace _6S.Models
                     {
                         if (user != null && user.Status == 1 && user.Pass == Tbl_Session_Login.Pass)
                         {
-                            logger.Info("User xác thực: " + Tbl_Session_Login.Fullname);
+                            logger.Info("User xác thực CheckAccount: " + Tbl_Session_Login.Fullname);
                             return true;
                         }
                     }
                     else
                     {
-                        logger.Error("Xác thực thất bại: hết session");
+                        logger.Error("Xác thực thất bại CheckAccount: hết session");
                         return false;
                     }
                 }
-                logger.Error("Xác thực thất bại: " + HttpContext.Current.Session["Username"]?.ToString());
+                logger.Error("Xác thực thất bại CheckAccount: " + HttpContext.Current.Session["Username"]?.ToString());
                 return false;
             }
             catch (Exception ex)
             {
-                logger.Error("Xác thực thất bại: " + HttpContext.Current.Session["Username"]?.ToString() + ". Lỗi: " + ex.Message);
+                logger.Error("Xác thực thất bại CheckAccount: " + HttpContext.Current.Session["Username"]?.ToString() + ". Lỗi: " + ex.Message);
                 return false;
             }
         }
@@ -115,7 +133,7 @@ namespace _6S.Models
             }
             catch (Exception ex)
             {
-                logger.Error("Lỗi: ", ex);
+                logger.Error("Lỗi User_Permissions: ", ex);
                 return null;
             }
         }
@@ -144,7 +162,46 @@ namespace _6S.Models
             }
             catch (Exception ex)
             {
-                logger.Error("Lỗi: ", ex);
+                logger.Error("Lỗi GetQuyenButtonsDict: ", ex);
+                return null;
+            }
+        }
+        //đường dẫn sever
+        public string IsInitialCatalogProvided()
+        {
+            try
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["Model_6S"]?.ConnectionString;
+                logger.Info("Connect database: " + connectionString);
+                if (!string.IsNullOrEmpty(connectionString))
+                {
+                    var builder = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+                    string valueCatalog = builder.InitialCatalog;
+                    if (valueCatalog == "Cham_6S")
+                    {
+                        string Patch_devPro = "6S_Pro";
+                        return Patch_devPro;
+                    }
+                    else if (valueCatalog == "Cham_6S_test")
+                    {
+                        string Patch_dev = "6s";
+                        return Patch_dev;
+                    }
+                    else
+                    {
+                        logger.Error("Lỗi IsInitialCatalogProvided valueCatalog không có giá trị");
+                        return null;
+                    }
+                }
+                else
+                {
+                    logger.Error("Lỗi IsInitialCatalogProvided connectionString rỗng");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Lỗi IsInitialCatalogProvided: ", ex);
                 return null;
             }
         }

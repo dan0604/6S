@@ -10,7 +10,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h1>Tài khoản người dùng</h1>
+                        <h1>Danh sách nhân viên cải tiến</h1>
                         <br />
                         <div class="col-12">
                             <button type="button" class="btn btn-outline-primary" id="openModalButton"><i class="fas fa-plus"></i>Tạo Nhân viên cải tiến mới</button>
@@ -168,40 +168,6 @@
             </div>
         </div>
         <!-- Form sửa NhanVienCaiTien (ẩn ban đầu) -->
-        <!---Đổi mật khẩu-->
-        <div class="modal" id="editModal_Pass" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editForm_Pass">
-                            <div class="form-group">
-                                <label for="inputName">Mật khẩu củ</label>
-                                <input type="password" id="Pass_Old" required="" name="Pass_Old" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputName">Mật khẩu mới</label>
-                                <input type="password" id="Pass_New" required="" name="Pass_New" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputName">Nhập lại mật khẩu</label>
-                                <input type="password" id="Re_Pass_New" required="" name="Re_Pass_New" class="form-control">
-                            </div>
-
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="btnCancel_Pass" class="btn btn-outline-secondary" data-dismiss="modal"><i class='fas fa-ban'></i>Hủy</button>
-                        <button type="submit" id="btnSave_Pass" name="submit" class="btn btn-outline-success float-right"><i class='fas fa-check'></i>Xác nhận</button>
-                    </div>
-                </div>
-            </div>
-        </div>
         <style>
             .link {
                 display: none;
@@ -237,7 +203,7 @@
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Đã tạo tài khoản 6S thành công',
+                                title: 'Đã tạo Nhân viên cải tiến 6S thành công',
                                 text: response.message
                             }).then((result) => {
                                 if (result.isConfirmed) {
@@ -250,7 +216,13 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Đã xảy ra lỗi',
-                                text: 'Thêm mới nhân viên thất bại!'
+                                text: 'Thêm mới nhân viên thất bại: ' + response.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    setTimeout(function () {
+                                        window.location.href = response.redirectUrl;
+                                    }, 2000);
+                                }
                             });
                         }
                     } else {
